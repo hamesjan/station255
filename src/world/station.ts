@@ -1,13 +1,10 @@
 import * as THREE from 'three';
 import { DIMS, PALETTE } from '../config';
 import * as tex from './textures';
-
-interface Box2D {
-  minX: number;
-  maxX: number;
-  minZ: number;
-  maxZ: number;
-}
+import type { Box2D } from './types';
+import { buildProps } from './props';
+import { buildCharacters } from './characters';
+import { Train } from './train';
 
 export interface Station {
   group: THREE.Group;
@@ -64,20 +61,14 @@ export function buildStation(): Station {
   // --- pillars against the back wall (solid: become colliders) ---
   const pillarTex = tex.pillarTexture();
   for (let x = -DIMS.halfLength + 8; x <= DIMS.halfLength - 8; x += 16) {
-    const pillar = new THREE.Mesh(
-      new THREE.BoxGeometry(1, DIMS.wallHeight, 0.7),
-      lambert(pillarTex),
-    );
+    const pillar = new THREE.Mesh(new THREE.BoxGeometry(1, DIMS.wallHeight, 0.7), lambert(pillarTex));
     const pz = DIMS.walkMinZ + 0.5;
     pillar.position.set(x, DIMS.wallHeight / 2, pz);
     group.add(pillar);
     colliders.push({ minX: x - 0.5, maxX: x + 0.5, minZ: pz - 0.35, maxZ: pz + 0.35 });
 
     // a slim outer post that meets the canopy edge (decorative, out of reach)
-    const post = new THREE.Mesh(
-      new THREE.BoxGeometry(0.35, DIMS.wallHeight, 0.35),
-      lambert(pillarTex),
-    );
+    const post = new THREE.Mesh(new THREE.BoxGeometry(0.35, DIMS.wallHeight, 0.35), lambert(pillarTex));
     post.position.set(x, DIMS.wallHeight / 2, DIMS.canopyZFront - 0.25);
     group.add(post);
   }
@@ -111,25 +102,6 @@ export function buildStation(): Station {
     group.add(rail);
   }
 
-  // --- the train: a long solid box. Non-enterable by construction (no
-  //     interior) and unreachable (it sits beyond the pit). Only the
-  //     platform-facing side gets the windowed texture. ---
-  const sideTex = tex.trainSideTexture();
-  sideTex.repeat.set(DIMS.length / 9, 1);
-  const bodyTex = tex.trainBodyTexture();
-  bodyTex.repeat.set(DIMS.length / 6, 1);
-  const roofMat = new THREE.MeshLambertMaterial({ color: PALETTE.trainTrim });
-  const bodyMat = lambert(bodyTex);
-  const sideMat = lambert(sideTex);
-  // BoxGeometry face order: +X, -X, +Y, -Y, +Z, -Z. The platform side is -Z.
-  const trainMats = [bodyMat, bodyMat, roofMat, bodyMat, bodyMat, sideMat];
-  const train = new THREE.Mesh(
-    new THREE.BoxGeometry(DIMS.length, DIMS.trainHeight, DIMS.trainDepth),
-    trainMats,
-  );
-  train.position.set(0, DIMS.floorY - DIMS.pitDepth + DIMS.trainHeight / 2, DIMS.trainZ);
-  group.add(train);
-
   // --- sky dome (drifts slowly; unaffected by fog) ---
   const skyTex = tex.skyTexture();
   const sky = new THREE.Mesh(
@@ -138,7 +110,20 @@ export function buildStation(): Station {
   );
   group.add(sky);
 
-  // --- collision: clamp to the walkable rectangle, then push out of pillars ---
+  // --- furniture, fixtures, and the people chilling around ---
+  const props = buildProps();
+  group.add(props.group);
+  colliders.push(...props.colliders);
+
+  const characters = buildCharacters();
+  group.add(characters.group);
+  colliders.push(...characters.colliders);
+
+  // --- the train: arrives, dwells, speeds off, every 3 minutes ---
+  const train = new Train();
+  group.add(train.group);
+
+  // --- collision: clamp to the walkable rectangle, then push out of solids ---
   const r = DIMS.playerRadius;
   const minX = -DIMS.halfLength + 3;
   const maxX = DIMS.halfLength - 3;
@@ -170,6 +155,9 @@ export function buildStation(): Station {
 
   const update = (dt: number): void => {
     skyTex.offset.x = (skyTex.offset.x + dt * 0.004) % 1;
+    props.update(dt);
+    characters.update(dt);
+    train.update(dt);
   };
 
   return { group, collide, update };
