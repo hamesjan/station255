@@ -8,6 +8,7 @@ import { PixelRenderer } from './engine/renderer';
 import { Input } from './engine/input';
 import { Player } from './engine/player';
 import { buildStation } from './world/station';
+import { Music } from './engine/audio';
 import { DIMS, PALETTE } from './config';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
@@ -26,6 +27,22 @@ scene.add(station.group);
 
 const player = new Player(-DIMS.halfLength + 8, 1.5);
 const input = new Input(canvas);
+
+// Background music: play whatever file lives in /assets/music, looping forever.
+// Browsers require a user gesture, so it starts on the first click; M toggles it.
+const tracks = import.meta.glob('../assets/music/*.{mp3,ogg,wav,m4a,aac,flac}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+}) as Record<string, string>;
+const trackUrl = Object.values(tracks)[0];
+const music = trackUrl ? new Music(trackUrl, 0.5) : null;
+if (music) {
+  window.addEventListener('pointerdown', () => music.start(), { once: true });
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'KeyM') music.toggle();
+  });
+}
 
 function resize(): void {
   pixel.setSize(window.innerWidth, window.innerHeight);
