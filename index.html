@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>station255</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #000;
+        overflow: hidden;
+        font-family: "Courier New", monospace;
+        user-select: none;
+      }
+      #app {
+        position: fixed;
+        inset: 0;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        /* keep the upscaled pixels crisp instead of letting the browser blur them */
+        image-rendering: pixelated;
+      }
+      #crosshair {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        width: 4px;
+        height: 4px;
+        margin: -2px 0 0 -2px;
+        background: #34433a;
+        opacity: 0.55;
+        border-radius: 50%;
+        pointer-events: none;
+      }
+      #hint {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 13%;
+        text-align: center;
+        color: #34433a;
+        letter-spacing: 2px;
+        font-size: 14px;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+      }
+      #hint.hidden {
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"><canvas id="game"></canvas></div>
+    <div id="crosshair"></div>
+    <div id="hint">
+      click to enter &middot; move&nbsp;&nbsp;W A S D &middot; look&nbsp;&nbsp;mouse &middot; esc to release
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
