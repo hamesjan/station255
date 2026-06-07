@@ -1,7 +1,14 @@
 # Plan: Notebook + Anomalies (the core loop)
 
-> Status: **not started.** This is the heart of the game.
-> Pick up any phase independently — each has its own acceptance criteria.
+> Status: **Phases 1–2 built.** The notebook (state + UI + localStorage, toggle N)
+> and interaction (walk up + Space → Pokémon dialogue box, records a one-time
+> notebook entry) exist in `src/game/`. Remaining: the anomaly system + director
+> (Phases 3–4) and the Exit-8 loop (Phase 5). Pick up any phase independently.
+>
+> Built so far in `src/game/`: `notebook.ts`, `notebookUI.ts`, `dialogue.ts`,
+> `interaction.ts` (proximity + facing, not yet a mesh raycast), `game.ts`
+> (orchestrator + HUD prompt/toast). NPCs declare a `talk` block in
+> `characters/index.ts`; the station surfaces them as `NpcSpec[]`.
 
 ## Goal
 Random "oddities" appear in the station; the player notices them and **records**

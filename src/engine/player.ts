@@ -16,7 +16,8 @@ export class Player {
   private yaw = Math.PI; // start facing down the platform (-X end -> +X)
   private pitch = 0;
   private bobPhase = 0;
-  private readonly sens = 0.0022;
+  private readonly turnSpeed = 2.2; // yaw radians/sec from arrow keys
+  private readonly pitchSpeed = 1.6; // pitch radians/sec from arrow keys
 
   constructor(startX: number, startZ: number) {
     this.x = startX;
@@ -29,10 +30,20 @@ export class Player {
     this.camera.updateProjectionMatrix();
   }
 
-  update(dt: number, input: Input, collide: CollideFn): void {
-    const m = input.consumeMouse();
-    this.yaw -= m.dx * this.sens;
-    this.pitch -= m.dy * this.sens;
+  // Keyboard-only: arrow keys look, WASD moves. `frozen` holds the player still
+  // while a menu/dialogue is open.
+  update(dt: number, input: Input, collide: CollideFn, frozen = false): void {
+    if (frozen) {
+      this.camera.position.set(this.x, DIMS.floorY + DIMS.eyeHeight, this.z);
+      this.camera.rotation.set(this.pitch, this.yaw, 0, 'YXZ');
+      return;
+    }
+
+    // look — arrow keys (left/right yaw, up/down pitch)
+    const turn = (input.isDown('ArrowLeft') ? 1 : 0) - (input.isDown('ArrowRight') ? 1 : 0);
+    const look = (input.isDown('ArrowUp') ? 1 : 0) - (input.isDown('ArrowDown') ? 1 : 0);
+    this.yaw += turn * this.turnSpeed * dt;
+    this.pitch += look * this.pitchSpeed * dt;
     this.pitch = Math.max(-1.3, Math.min(1.3, this.pitch));
 
     const fwd = (input.isDown('KeyW') ? 1 : 0) - (input.isDown('KeyS') ? 1 : 0);

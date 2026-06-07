@@ -1,27 +1,20 @@
-// Keyboard + pointer-lock mouse input. Mouse deltas accumulate between frames
-// and are drained once per update via consumeMouse().
+// Keyboard-only input. Tracks held keys and edge-triggered presses. No mouse:
+// looking is done with the arrow keys (see Player).
 export class Input {
-  locked = false;
-
   private readonly keys = new Set<string>();
-  private dx = 0;
-  private dy = 0;
+  private readonly pressed = new Set<string>(); // keys that went down this frame
 
-  constructor(private readonly el: HTMLElement) {
-    window.addEventListener('keydown', (e) => this.keys.add(e.code));
+  constructor() {
+    window.addEventListener('keydown', (e) => {
+      if (!this.keys.has(e.code)) this.pressed.add(e.code); // ignore auto-repeat
+      this.keys.add(e.code);
+      // arrows/space would otherwise scroll the page
+      if (SWALLOW.has(e.code)) e.preventDefault();
+    });
     window.addEventListener('keyup', (e) => this.keys.delete(e.code));
-    window.addEventListener('blur', () => this.keys.clear());
-
-    el.addEventListener('click', () => {
-      if (!this.locked) void el.requestPointerLock();
-    });
-    document.addEventListener('pointerlockchange', () => {
-      this.locked = document.pointerLockElement === el;
-    });
-    document.addEventListener('mousemove', (e) => {
-      if (!this.locked) return;
-      this.dx += e.movementX;
-      this.dy += e.movementY;
+    window.addEventListener('blur', () => {
+      this.keys.clear();
+      this.pressed.clear();
     });
   }
 
@@ -29,10 +22,22 @@ export class Input {
     return this.keys.has(code);
   }
 
-  consumeMouse(): { dx: number; dy: number } {
-    const d = { dx: this.dx, dy: this.dy };
-    this.dx = 0;
-    this.dy = 0;
-    return d;
+  // True once for a key on the frame it was pressed. Consumes the press so only
+  // one handler reacts to it.
+  consumePress(code: string): boolean {
+    return this.pressed.delete(code);
+  }
+
+  // Drop any unconsumed presses; call once at the end of each frame.
+  endFrame(): void {
+    this.pressed.clear();
   }
 }
+
+const SWALLOW = new Set([
+  'ArrowUp',
+  'ArrowDown',
+  'ArrowLeft',
+  'ArrowRight',
+  'Space',
+]);

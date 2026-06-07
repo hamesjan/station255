@@ -20,12 +20,24 @@ export class Music {
     });
   }
 
+  // Mute (keep playing, silenced) rather than pause, so position is preserved.
   toggle(): void {
-    if (this.el.paused) void this.el.play();
-    else this.el.pause();
+    this.el.muted = !this.el.muted;
+  }
+
+  get volume(): number {
+    return this.el.volume;
   }
 
   setVolume(v: number): void {
     this.el.volume = Math.max(0, Math.min(1, v));
+  }
+
+  get muted(): boolean {
+    return this.el.muted;
+  }
+
+  setMuted(m: boolean): void {
+    this.el.muted = m;
   }
 }

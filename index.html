@@ -25,6 +25,10 @@
         /* keep the upscaled pixels crisp instead of letting the browser blur them */
         image-rendering: pixelated;
       }
+      /* keyboard-only game: no mouse cursor needed */
+      #app {
+        cursor: none;
+      }
       #crosshair {
         position: fixed;
         left: 50%;
@@ -53,13 +57,222 @@
       #hint.hidden {
         opacity: 0;
       }
+
+      /* the hidden attribute must always win over the display rules below */
+      [hidden] {
+        display: none !important;
+      }
+
+      /* interaction prompt ("talk to … [Space]") */
+      .prompt {
+        position: fixed;
+        left: 50%;
+        bottom: 22%;
+        transform: translateX(-50%);
+        background: rgba(43, 58, 48, 0.82);
+        color: #eef4ec;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 14px;
+        letter-spacing: 1px;
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 25;
+      }
+
+      /* "recorded: …" capture toast */
+      .toast {
+        position: fixed;
+        left: 50%;
+        top: 13%;
+        transform: translateX(-50%);
+        background: #2b3a30;
+        color: #eef4ec;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.18);
+        pointer-events: none;
+        z-index: 45;
+      }
+
+      /* Pokémon-style dialogue box */
+      .dlg {
+        position: fixed;
+        left: 50%;
+        bottom: 5%;
+        transform: translateX(-50%);
+        width: min(720px, 92vw);
+        background: #ffffff;
+        border: 4px solid #2b3a30;
+        border-radius: 12px;
+        box-shadow: 0 6px 0 rgba(0, 0, 0, 0.18), inset 0 0 0 2px #cdd9cf;
+        padding: 18px 22px 26px;
+        color: #243029;
+        font-size: 19px;
+        line-height: 1.55;
+        pointer-events: none;
+        z-index: 30;
+      }
+      .dlg-name {
+        position: absolute;
+        top: -16px;
+        left: 18px;
+        background: #4f7a57;
+        color: #fff;
+        border: 2px solid #2b3a30;
+        border-radius: 6px;
+        padding: 2px 12px;
+        font-size: 14px;
+        letter-spacing: 1px;
+      }
+      .dlg-text {
+        min-height: 3.2em;
+        white-space: pre-wrap;
+      }
+      .dlg-cue {
+        position: absolute;
+        right: 16px;
+        bottom: 8px;
+        color: #4f7a57;
+        font-size: 16px;
+      }
+
+      /* notebook overlay */
+      .nb {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(20, 28, 22, 0.55);
+        z-index: 40;
+      }
+      .nb-sheet {
+        width: min(620px, 92vw);
+        max-height: 80vh;
+        overflow: auto;
+        background: #f5f1e6;
+        border: 4px solid #2b3a30;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        padding: 22px 26px;
+        color: #2b3a30;
+      }
+      .nb-head {
+        font-size: 22px;
+        letter-spacing: 4px;
+        border-bottom: 2px solid #c7bfa6;
+        padding-bottom: 8px;
+      }
+      .nb-count {
+        font-size: 13px;
+        opacity: 0.7;
+        margin: 6px 0 14px;
+      }
+      .nb-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .nb-empty {
+        font-size: 14px;
+        opacity: 0.7;
+        line-height: 1.5;
+      }
+      .nb-item-title {
+        font-weight: bold;
+        font-size: 16px;
+      }
+      .nb-item-body {
+        font-size: 14px;
+        line-height: 1.45;
+        margin-top: 2px;
+      }
+      .nb-item-when {
+        font-size: 11px;
+        opacity: 0.5;
+        margin-top: 3px;
+      }
+      .nb-foot {
+        margin-top: 18px;
+        font-size: 12px;
+        opacity: 0.6;
+        text-align: right;
+      }
+
+      /* settings modal (Esc) — dims the world, mouse usable */
+      .settings {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(10, 14, 11, 0.62);
+        z-index: 50;
+        cursor: auto;
+      }
+      .set-sheet {
+        width: min(420px, 92vw);
+        background: #f5f1e6;
+        border: 4px solid #2b3a30;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        padding: 22px 26px;
+        color: #2b3a30;
+      }
+      .set-head {
+        font-size: 22px;
+        letter-spacing: 4px;
+        border-bottom: 2px solid #c7bfa6;
+        padding-bottom: 8px;
+        margin-bottom: 16px;
+      }
+      .set-section-title {
+        font-size: 12px;
+        letter-spacing: 2px;
+        opacity: 0.6;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+      .set-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 14px;
+        font-size: 14px;
+      }
+      .set-row input[type='range'] {
+        flex: 1;
+        accent-color: #4f7a57;
+        cursor: pointer;
+      }
+      .set-row input[type='checkbox'] {
+        width: 16px;
+        height: 16px;
+        accent-color: #4f7a57;
+        cursor: pointer;
+      }
+      .set-row .val {
+        width: 3.2em;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+      .set-foot {
+        margin-top: 14px;
+        font-size: 12px;
+        opacity: 0.6;
+        text-align: right;
+      }
     </style>
   </head>
   <body>
     <div id="app"><canvas id="game"></canvas></div>
     <div id="crosshair"></div>
     <div id="hint">
-      click to enter &middot; move&nbsp;&nbsp;W A S D &middot; look&nbsp;&nbsp;mouse &middot; M&nbsp;mute &middot; esc to release
+      move&nbsp;&nbsp;W A S D &middot; look&nbsp;&nbsp;&larr; &uarr; &darr; &rarr; &middot; talk&nbsp;&nbsp;Space &middot; notebook&nbsp;&nbsp;N &middot; settings&nbsp;&nbsp;Esc
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

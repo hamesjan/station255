@@ -4,11 +4,13 @@ import * as tex from './textures';
 import type { Box2D } from './types';
 import { buildProps } from './props';
 import { buildCharacters } from './characters';
+import type { NpcSpec } from './characters/types';
 import { Train } from './train';
 
 export interface Station {
   group: THREE.Group;
   collide: (x: number, z: number) => { x: number; z: number };
+  interactions: NpcSpec[];
   update: (dt: number) => void;
 }
 
@@ -160,5 +162,5 @@ export function buildStation(): Station {
     train.update(dt);
   };
 
-  return { group, collide, update };
+  return { group, collide, interactions: characters.interactions, update };
 }

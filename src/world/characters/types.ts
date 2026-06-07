@@ -25,11 +25,20 @@ export interface CharacterInstance {
   update?: (dt: number, clock: number) => void;
 }
 
-// A reusable source of characters — the procedural pixel people, or a specific
-// glTF model. Register one, then spawn many instances, each with its own
-// CharacterVariation. This is the seam that makes the system scalable: new art
-// is a new CharacterKind, and nothing else has to change.
+// A reusable source of characters — a specific glTF model. Register one, then
+// spawn many instances, each with its own CharacterVariation. This is the seam
+// that makes the system scalable: new art is a new CharacterKind, and nothing
+// else has to change.
 export interface CharacterKind {
   readonly id: string;
   create(variation: CharacterVariation): CharacterInstance;
+}
+
+// Data describing how a placed character can be talked to. The game layer turns
+// this into an interactable (dialogue + an optional one-time notebook entry).
+export interface NpcSpec {
+  position: THREE.Vector3;
+  name: string;
+  lines: string[];
+  note?: { id: string; title: string; body: string };
 }
