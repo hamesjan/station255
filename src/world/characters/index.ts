@@ -3,7 +3,6 @@ import { DIMS } from '../../config';
 import type { Box2D } from '../types';
 import type { CharacterInstance, CharacterVariation } from './types';
 import { getCharacterKind, registerCharacterKind } from './registry';
-import { pixelPersonKind } from './pixelPerson';
 import { createModelKind } from './modelCharacter';
 import { MODEL_URLS } from './modelAssets';
 
@@ -14,9 +13,8 @@ export interface Characters {
 }
 
 // --- register character kinds ---
-registerCharacterKind(pixelPersonKind);
-
-// Every .glb in /assets/models auto-registers as a kind named after the file.
+// Characters are 3D models (GLB). Drop a .glb in /assets/models and it
+// auto-registers as a kind named after the file; place it below.
 // Convention for per-instance tinting: name the swappable material "shirt" (or
 // anything containing that word) in your modelling tool.
 for (const [name, url] of Object.entries(MODEL_URLS)) {
@@ -36,19 +34,15 @@ interface Placement {
   variation: CharacterVariation;
 }
 
-// Who's in the station and where. Add model placements by referencing the GLB's
-// filename (e.g. kind: 'passenger' for assets/models/passenger.glb).
+// Who's in the station and where. `kind` is the GLB's filename without extension
+// (e.g. 'pacer' for assets/models/pacer.glb). One model becomes many individuals
+// via tint / scale / mirror / rotationY, and each can run a behavior routine.
 const PLACEMENTS: Placement[] = [
-  { kind: 'pixel-person', x: 0, z: 1.62, variation: { pose: 'sit', variant: 0 } },
-  { kind: 'pixel-person', x: -30, z: 1.62, variation: { pose: 'sit', variant: 3 } },
-  { kind: 'pixel-person', x: -18, z: 2.8, variation: { pose: 'stand', variant: 1 } },
-  { kind: 'pixel-person', x: 14, z: -2.3, variation: { pose: 'stand', variant: 2 } },
-  { kind: 'pixel-person', x: 36, z: 2.4, variation: { pose: 'stand', variant: 4 } },
-  { kind: 'pixel-person', x: -41, z: 2.1, variation: { pose: 'stand', variant: 5 } },
-  // Once you add e.g. assets/models/passenger.glb, place 3D people like this —
-  // same model, each made unique by tint / scale / mirror / animation:
-  // { kind: 'passenger', x: 8,  z: 2.6, variation: { tint: '#8fc6ff', animation: 'Idle' } },
-  // { kind: 'passenger', x: -8, z: 2.2, variation: { tint: '#f0e2a0', scale: 0.96, mirror: true } },
+  // The Blender pacer, reused as several distinct people pacing the platform.
+  { kind: 'pacer', x: 6, z: 2.4, variation: {} },
+  { kind: 'pacer', x: -22, z: 2.8, variation: { tint: '#8fc6ff', scale: 0.96, mirror: true } },
+  { kind: 'pacer', x: 30, z: 1.9, variation: { tint: '#f0c27a', scale: 1.04 } },
+  { kind: 'pacer', x: -40, z: 2.3, variation: { tint: '#d79ad0', mirror: true } },
 ];
 
 export function buildCharacters(): Characters {

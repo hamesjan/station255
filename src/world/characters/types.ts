@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import type { Behavior } from './behavior';
 
 export type Pose = 'stand' | 'sit';
 
@@ -10,7 +11,9 @@ export interface CharacterVariation {
   scale?: number; // height multiplier
   mirror?: boolean; // flip horizontally for variety
   tint?: string; // recolor (e.g. the shirt) where supported
-  animation?: string; // animation clip name for animated models
+  rotationY?: number; // facing direction, radians (people face different ways)
+  animation?: string; // a single looping clip (ignored if `behavior` is set)
+  behavior?: string | Behavior; // a personality routine: a preset id or inline behavior
 }
 
 // A spawned character: a scene object plus how it collides and animates. The

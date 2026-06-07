@@ -2,12 +2,14 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import type { CharacterInstance, CharacterKind, CharacterVariation } from './types';
+import { type Behavior, type BehaviorDriver, createBehaviorDriver, resolveBehavior } from './behavior';
 
 export interface ModelKindOptions {
   baseScale?: number; // scale applied to every instance (fit the model to ~1.8m)
   colliderRadius?: number;
   recolorMaterial?: string; // material whose name contains this gets tinted per-instance
-  defaultAnimation?: string; // clip to play if a placement doesn't pick one
+  defaultAnimation?: string; // single clip to play if a placement picks neither animation nor behavior
+  defaultBehavior?: string | Behavior; // personality routine to run if a placement doesn't pick one
   pixelate?: boolean; // nearest-filter the model's textures for the Doom look (default true)
 }
 
@@ -50,7 +52,9 @@ export function createModelKind(id: string, url: string, opts: ModelKindOptions 
     id,
     create(v: CharacterVariation): CharacterInstance {
       const object = new THREE.Group();
+      if (v.rotationY) object.rotation.y = v.rotationY;
       let mixer: THREE.AnimationMixer | null = null;
+      let driver: BehaviorDriver | null = null;
 
       // Async: the model pops in when the GLB finishes loading.
       void ensureLoaded().then(() => {
@@ -62,12 +66,22 @@ export function createModelKind(id: string, url: string, opts: ModelKindOptions 
         if (v.tint && opts.recolorMaterial) recolor(model, opts.recolorMaterial, v.tint);
         object.add(model);
 
+        if (loaded.animations.length === 0) return;
+        mixer = new THREE.AnimationMixer(model);
+
+        // A behavior (a routine of clips) takes priority; otherwise play one clip.
+        const behavior = resolveBehavior(v.behavior ?? opts.defaultBehavior);
+        if (behavior) {
+          driver = createBehaviorDriver(mixer, loaded.animations, behavior);
+          if (driver) return; // driver picked and started its first clip
+        }
+
         const clipName = v.animation ?? opts.defaultAnimation;
-        const clip = clipName
-          ? THREE.AnimationClip.findByName(loaded.animations, clipName)
-          : loaded.animations[0];
+        // Use the named clip if it exists, else just play the model's first clip.
+        const clip =
+          (clipName && THREE.AnimationClip.findByName(loaded.animations, clipName)) ||
+          loaded.animations[0];
         if (clip) {
-          mixer = new THREE.AnimationMixer(model);
           mixer.clipAction(clip).play();
           mixer.setTime(Math.random() * clip.duration); // desync identical models
         }
@@ -77,7 +91,10 @@ export function createModelKind(id: string, url: string, opts: ModelKindOptions 
         object,
         baseY: 0,
         collider: { halfX: opts.colliderRadius ?? 0.3, halfZ: opts.colliderRadius ?? 0.3 },
-        update: (dt) => mixer?.update(dt),
+        update: (dt) => {
+          driver?.update(dt);
+          mixer?.update(dt);
+        },
       };
     },
   };
