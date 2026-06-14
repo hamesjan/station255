@@ -1,0 +1,5 @@
+station255.com, www.station255.com {
+    root * /root/station255/dist
+    file_server
+    try_files {path} /index.html
+}
