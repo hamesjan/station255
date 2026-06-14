@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { PALETTE } from '../config';
+import { PALETTE, NATURE } from '../config';
 
 // Every texture in the game is painted procedurally onto a small 2D canvas and
 // sampled with NearestFilter. Small source + nearest sampling is what gives the
@@ -182,6 +182,131 @@ export const skyTexture = (): THREE.CanvasTexture => {
 };
 
 // ---------------------------------------------------------------------------
+// Nature: ground, water
+// ---------------------------------------------------------------------------
+
+// Grassy ground beyond the platform: a mottled green with scattered blades and
+// the odd wildflower fleck, so the distance reads as a real meadow.
+export const grassTexture = (): THREE.CanvasTexture =>
+  makeTexture(64, 64, (ctx, w, h) => {
+    fill(ctx, w, h, NATURE.grass);
+    for (let i = 0; i < 240; i++) {
+      const x = Math.random() * w;
+      const y = Math.random() * h;
+      ctx.fillStyle = Math.random() < 0.5 ? NATURE.grassDark : NATURE.grassLight;
+      ctx.fillRect(x, y, 1, 1 + Math.round(Math.random() * 2));
+    }
+    const flowers = [NATURE.flowerA, NATURE.flowerB, NATURE.flowerC, NATURE.flowerD];
+    for (let i = 0; i < 10; i++) {
+      ctx.fillStyle = flowers[i % flowers.length];
+      ctx.fillRect(Math.random() * w, Math.random() * h, 2, 2);
+    }
+    grain(ctx, w, h, 5);
+  });
+
+// Calm water: layered blue with a few foam glints. Scrolled slowly in the world
+// update so the surface shimmers.
+export const waterTexture = (): THREE.CanvasTexture =>
+  makeTexture(64, 64, (ctx, w, h) => {
+    fill(ctx, w, h, NATURE.water);
+    ctx.fillStyle = NATURE.waterDeep;
+    for (let i = 0; i < 60; i++) {
+      ctx.fillRect(Math.random() * w, Math.random() * h, 3 + Math.random() * 6, 1);
+    }
+    ctx.fillStyle = NATURE.waterFoam;
+    for (let i = 0; i < 26; i++) {
+      ctx.fillRect(Math.random() * w, Math.random() * h, 1 + Math.random() * 3, 1);
+    }
+    grain(ctx, w, h, 4);
+  });
+
+// ---------------------------------------------------------------------------
+// Subway: tiled walls, concrete, lockers
+// ---------------------------------------------------------------------------
+
+// Glossy metro wall tiles: offset "brick" courses with grout, the odd accent
+// tile of color so the corridors don't read as a single flat slab.
+export const subwayTileTexture = (): THREE.CanvasTexture =>
+  makeTexture(64, 64, (ctx, w, h) => {
+    fill(ctx, w, h, PALETTE.tileGrout);
+    const tw = 16;
+    const th = 8;
+    for (let row = 0; row * th < h; row++) {
+      const offset = row % 2 ? tw / 2 : 0;
+      for (let col = -1; col * tw < w; col++) {
+        const x = col * tw + offset + 1;
+        const y = row * th + 1;
+        ctx.fillStyle = Math.random() < 0.06 ? PALETTE.tileAccent : PALETTE.tileWall;
+        ctx.fillRect(x, y, tw - 2, th - 2);
+        // a soft highlight along the top edge = "glossy"
+        ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        ctx.fillRect(x, y, tw - 2, 1);
+      }
+    }
+    grain(ctx, w, h, 4);
+  });
+
+export const concreteTexture = (): THREE.CanvasTexture =>
+  makeTexture(64, 64, (ctx, w, h) => {
+    fill(ctx, w, h, PALETTE.concrete);
+    ctx.strokeStyle = PALETTE.concreteDark;
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 5; i++) {
+      ctx.beginPath();
+      ctx.moveTo(Math.random() * w, Math.random() * h);
+      ctx.lineTo(Math.random() * w, Math.random() * h);
+      ctx.stroke();
+    }
+    // expansion-joint lines
+    ctx.fillStyle = PALETTE.concreteDark;
+    ctx.fillRect(0, Math.round(h / 2), w, 1);
+    ctx.fillRect(Math.round(w / 2), 0, 1, h);
+    grain(ctx, w, h, 9);
+  });
+
+// One locker door; repeated across a bank. Vents, a handle, and a number plate.
+export const lockerTexture = (): THREE.CanvasTexture =>
+  makeTexture(32, 64, (ctx, w, h) => {
+    fill(ctx, w, h, PALETTE.locker);
+    ctx.fillStyle = PALETTE.lockerTrim;
+    ctx.fillRect(0, 0, 2, h);
+    ctx.fillRect(w - 2, 0, 2, h);
+    ctx.fillRect(0, 0, w, 2);
+    ctx.fillRect(0, h - 2, w, 2);
+    // vents near the top
+    ctx.fillStyle = PALETTE.lockerTrim;
+    for (let i = 0; i < 3; i++) ctx.fillRect(6, 6 + i * 3, w - 12, 1);
+    // handle
+    ctx.fillStyle = PALETTE.lockerHandle;
+    ctx.fillRect(w - 9, h * 0.5, 4, 10);
+    // number plate
+    ctx.fillStyle = '#e9eef2';
+    ctx.fillRect(7, 16, 10, 6);
+    ctx.fillStyle = PALETTE.lockerTrim;
+    ctx.fillRect(9, 18, 2, 2);
+    ctx.fillRect(13, 18, 2, 2);
+  });
+
+// Concentric rings for the anomalous indoor puddle that ripples on its own.
+export const rippleTexture = (): THREE.CanvasTexture =>
+  spriteTexture(64, 64, (ctx, w, h) => {
+    ctx.clearRect(0, 0, w, h);
+    const cx = w / 2;
+    const cy = h / 2;
+    ctx.fillStyle = '#bfe9ff';
+    ctx.beginPath();
+    ctx.arc(cx, cy, w / 2 - 1, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+    for (let r = 6; r < w / 2; r += 8) {
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  });
+
+// ---------------------------------------------------------------------------
 // Sprites & wall art
 // ---------------------------------------------------------------------------
 
@@ -342,4 +467,129 @@ export const routeMapTexture = (): THREE.CanvasTexture =>
     ctx.arc(44, 28, 3.4, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
+  });
+
+// ---------------------------------------------------------------------------
+// Subway signage & ads (sprites)
+// ---------------------------------------------------------------------------
+
+// A tiny 3x5 pixel font, just enough to spell out the station number and a few
+// short words on signs.
+const GLYPHS: Record<string, string[]> = {
+  '0': ['111', '101', '101', '101', '111'],
+  '1': ['010', '110', '010', '010', '111'],
+  '2': ['111', '001', '111', '100', '111'],
+  '3': ['111', '001', '111', '001', '111'],
+  '4': ['101', '101', '111', '001', '001'],
+  '5': ['111', '100', '111', '001', '111'],
+  '6': ['111', '100', '111', '101', '111'],
+  '7': ['111', '001', '010', '010', '010'],
+  '8': ['111', '101', '111', '101', '111'],
+  '9': ['111', '101', '111', '001', '111'],
+  A: ['111', '101', '111', '101', '101'],
+  E: ['111', '100', '110', '100', '111'],
+  N: ['101', '111', '111', '111', '101'],
+  O: ['111', '101', '101', '101', '111'],
+  T: ['111', '010', '010', '010', '010'],
+  U: ['101', '101', '101', '101', '111'],
+  W: ['101', '101', '111', '111', '101'],
+  Y: ['101', '101', '010', '010', '010'],
+  ' ': ['000', '000', '000', '000', '000'],
+};
+
+function drawText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, px: number, color: string): void {
+  ctx.fillStyle = color;
+  let cx = x;
+  for (const ch of text.toUpperCase()) {
+    const g = GLYPHS[ch];
+    if (g) {
+      for (let r = 0; r < 5; r++) for (let c = 0; c < 3; c++) if (g[r][c] === '1') ctx.fillRect(cx + c * px, y + r * px, px, px);
+    }
+    cx += 4 * px;
+  }
+}
+
+// Bright wall advertisements — bold flat-color compositions so the corridors
+// feel busy and colourful.
+export const adTexture = (variant: number): THREE.CanvasTexture =>
+  spriteTexture(64, 96, (ctx, w, h) => {
+    const sets = [
+      ['#ff5d8f', '#ffd23d', '#2a5ec0'],
+      ['#1f8a4c', '#5fe0ff', '#f4c400'],
+      ['#8a5cff', '#ff8a4c', '#ffffff'],
+      ['#ff3b6b', '#1fc0c0', '#fff3b0'],
+    ];
+    const c = sets[variant % sets.length];
+    fill(ctx, w, h, c[0]);
+    ctx.fillStyle = c[2];
+    ctx.beginPath();
+    ctx.arc(w / 2, h * 0.38, 20, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = c[1];
+    ctx.beginPath();
+    ctx.arc(w / 2, h * 0.38, 12, 0, Math.PI * 2);
+    ctx.fill();
+    // headline + footer bars
+    ctx.fillStyle = c[2];
+    ctx.fillRect(8, h * 0.66, w - 16, 12);
+    ctx.fillRect(8, h * 0.66, w - 16, 12);
+    drawText(ctx, 'RIDE', 14, h * 0.66 + 3, 3, c[0]);
+    ctx.fillStyle = c[1];
+    ctx.fillRect(8, h - 18, w - 16, 8);
+    // thin frame
+    ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(2, 2, w - 4, h - 4);
+  });
+
+// Transit roundel with the station number.
+export const roundelTexture = (): THREE.CanvasTexture =>
+  spriteTexture(96, 96, (ctx, w, h) => {
+    ctx.clearRect(0, 0, w, h);
+    const cx = w / 2;
+    const cy = h / 2;
+    ctx.fillStyle = PALETTE.signBlue;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 40, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#f6faff';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 26, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = PALETTE.signRed;
+    ctx.fillRect(6, cy - 9, w - 12, 18);
+    drawText(ctx, '255', cx - 16, cy - 8, 4, '#ffffff');
+  });
+
+// Directional sign: a coloured panel with a short word and a white arrow.
+export const signTexture = (label: string, color: string, dir: 'left' | 'right'): THREE.CanvasTexture =>
+  spriteTexture(96, 32, (ctx, w, h) => {
+    fill(ctx, w, h, color);
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(1, 1, w - 2, h - 2);
+    drawText(ctx, label, dir === 'left' ? 20 : 6, 9, 3, '#ffffff');
+    ctx.fillStyle = '#ffffff';
+    const ax = dir === 'left' ? 8 : w - 8;
+    const s = dir === 'left' ? 1 : -1;
+    ctx.beginPath();
+    ctx.moveTo(ax, h / 2);
+    ctx.lineTo(ax + s * 9, h / 2 - 7);
+    ctx.lineTo(ax + s * 9, h / 2 - 3);
+    ctx.lineTo(ax + s * 16, h / 2 - 3);
+    ctx.lineTo(ax + s * 16, h / 2 + 3);
+    ctx.lineTo(ax + s * 9, h / 2 + 3);
+    ctx.lineTo(ax + s * 9, h / 2 + 7);
+    ctx.closePath();
+    ctx.fill();
+  });
+
+// Big platform nameboard: "STATION 255" on the transit blue.
+export const nameboardTexture = (): THREE.CanvasTexture =>
+  spriteTexture(160, 32, (ctx, w, h) => {
+    fill(ctx, w, h, '#f6faff');
+    ctx.fillStyle = PALETTE.signBlue;
+    ctx.fillRect(0, 0, w, 4);
+    ctx.fillRect(0, h - 4, w, 4);
+    drawText(ctx, 'STATION 255', 8, 12, 3, PALETTE.signBlue);
   });

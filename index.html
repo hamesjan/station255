@@ -22,8 +22,9 @@
         display: block;
         width: 100%;
         height: 100%;
-        /* keep the upscaled pixels crisp instead of letting the browser blur them */
-        image-rendering: pixelated;
+        /* the renderer presents at native resolution; let the browser resample
+           smoothly so the image is easy on the eyes */
+        image-rendering: auto;
       }
       /* keyboard-only game: no mouse cursor needed */
       #app {

@@ -1,15 +1,19 @@
 import * as THREE from 'three';
-import { DIMS, PALETTE } from '../config';
+import { DIMS, PALETTE, SUBWAY } from '../config';
 import * as tex from './textures';
 import type { Box2D } from './types';
 import { buildProps } from './props';
 import { buildCharacters } from './characters';
+import { buildScenery } from './scenery';
+import { buildAnomalies } from './anomalies';
+import { buildSubway, subwayFloorAt } from './subway';
 import type { NpcSpec } from './characters/types';
 import { Train } from './train';
 
 export interface Station {
   group: THREE.Group;
   collide: (x: number, z: number) => { x: number; z: number };
+  floorAt: (x: number, z: number) => number;
   interactions: NpcSpec[];
   update: (dt: number) => void;
 }
@@ -48,10 +52,26 @@ export function buildStation(): Station {
   floor.position.set(0, DIMS.floorY, (DIMS.walkMinZ + DIMS.walkMaxZ) / 2);
   group.add(floor);
 
-  // --- back wall ---
-  const wall = panel(DIMS.length, DIMS.wallHeight, tex.wallTexture(), DIMS.length / 4, DIMS.wallHeight / 3);
-  wall.position.set(0, DIMS.wallHeight / 2, DIMS.walkMinZ);
-  group.add(wall);
+  // --- back wall, with a doorway cut for the stairs down to the concourse ---
+  {
+    const doorL = SUBWAY.stairCx - SUBWAY.stairHalfW;
+    const doorR = SUBWAY.stairCx + SUBWAY.stairHalfW;
+    const x0 = -DIMS.halfLength;
+    const x1 = DIMS.halfLength;
+    const leftW = doorL - x0;
+    const rightW = x1 - doorR;
+    const left = panel(leftW, DIMS.wallHeight, tex.wallTexture(), leftW / 4, DIMS.wallHeight / 3);
+    left.position.set((x0 + doorL) / 2, DIMS.wallHeight / 2, DIMS.walkMinZ);
+    group.add(left);
+    const right = panel(rightW, DIMS.wallHeight, tex.wallTexture(), rightW / 4, DIMS.wallHeight / 3);
+    right.position.set((doorR + x1) / 2, DIMS.wallHeight / 2, DIMS.walkMinZ);
+    group.add(right);
+    // lintel above the opening
+    const lintelH = DIMS.wallHeight - SUBWAY.openTopY;
+    const lintel = panel(doorR - doorL, lintelH, tex.wallTexture(), (doorR - doorL) / 4, lintelH / 3);
+    lintel.position.set(SUBWAY.stairCx, SUBWAY.openTopY + lintelH / 2, DIMS.walkMinZ);
+    group.add(lintel);
+  }
 
   // --- canopy roof over the platform (open on the train side, above) ---
   const canopyDepth = DIMS.canopyZFront - DIMS.canopyZBack;
@@ -112,6 +132,11 @@ export function buildStation(): Station {
   );
   group.add(sky);
 
+  // --- the world beyond the platform: meadow, pond, trees, potted plants ---
+  const scenery = buildScenery();
+  group.add(scenery.group);
+  colliders.push(...scenery.colliders);
+
   // --- furniture, fixtures, and the people chilling around ---
   const props = buildProps();
   group.add(props.group);
@@ -121,20 +146,56 @@ export function buildStation(): Station {
   group.add(characters.group);
   colliders.push(...characters.colliders);
 
+  // --- the quietly-wrong things you can catch if you look closely ---
+  const anomalies = buildAnomalies();
+  group.add(anomalies.group);
+  colliders.push(...anomalies.colliders);
+
+  const interactions: NpcSpec[] = [...characters.interactions, ...anomalies.interactions];
+
+  // --- the stairwell + underground subway concourse ---
+  const subway = buildSubway();
+  group.add(subway.group);
+  colliders.push(...subway.colliders);
+
   // --- the train: arrives, dwells, speeds off, every 3 minutes ---
   const train = new Train();
   group.add(train.group);
 
-  // --- collision: clamp to the walkable rectangle, then push out of solids ---
+  // --- collision: stay inside the union of walkable zones, then push out of
+  // solids. Zones overlap at their seams (platform↔stairs↔hall) so you can walk
+  // continuously between levels. ---
   const r = DIMS.playerRadius;
-  const minX = -DIMS.halfLength + 3;
-  const maxX = DIMS.halfLength - 3;
-  const minZ = DIMS.walkMinZ + r;
-  const maxZ = DIMS.pitZStart - r; // platform edge stops you before the tracks
+  const clamp = (v: number, lo: number, hi: number): number => Math.max(lo, Math.min(hi, v));
+  // [minX, maxX, minZ, maxZ]
+  const zones: [number, number, number, number][] = [
+    [-DIMS.halfLength + 3, DIMS.halfLength - 3, DIMS.walkMinZ + r, DIMS.pitZStart - r], // platform
+    [SUBWAY.stairCx - SUBWAY.stairHalfW + r, SUBWAY.stairCx + SUBWAY.stairHalfW - r, SUBWAY.stairMinZ, SUBWAY.stairMaxZ], // stairwell
+    [SUBWAY.hallMinX + r, SUBWAY.hallMaxX - r, SUBWAY.hallMinZ + r, SUBWAY.hallMaxZ], // concourse
+  ];
+  const inside = (zn: [number, number, number, number], x: number, z: number): boolean =>
+    x >= zn[0] && x <= zn[1] && z >= zn[2] && z <= zn[3];
 
   const collide = (x: number, z: number): { x: number; z: number } => {
-    x = Math.max(minX, Math.min(maxX, x));
-    z = Math.max(minZ, Math.min(maxZ, z));
+    // keep the point inside the union: if it left every zone, snap to the
+    // nearest one's edge (zones overlap, so transitions stay smooth)
+    if (!zones.some((zn) => inside(zn, x, z))) {
+      let best = Infinity;
+      let bx = x;
+      let bz = z;
+      for (const zn of zones) {
+        const qx = clamp(x, zn[0], zn[1]);
+        const qz = clamp(z, zn[2], zn[3]);
+        const d = (qx - x) ** 2 + (qz - z) ** 2;
+        if (d < best) {
+          best = d;
+          bx = qx;
+          bz = qz;
+        }
+      }
+      x = bx;
+      z = bz;
+    }
     for (const b of colliders) {
       const ex0 = b.minX - r;
       const ex1 = b.maxX + r;
@@ -157,10 +218,13 @@ export function buildStation(): Station {
 
   const update = (dt: number): void => {
     skyTex.offset.x = (skyTex.offset.x + dt * 0.004) % 1;
+    scenery.update(dt);
     props.update(dt);
     characters.update(dt);
+    anomalies.update(dt);
+    subway.update(dt);
     train.update(dt);
   };
 
-  return { group, collide, interactions: characters.interactions, update };
+  return { group, collide, floorAt: subwayFloorAt, interactions, update };
 }

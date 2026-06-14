@@ -35,6 +35,9 @@ export function createModelKind(id: string, url: string, opts: ModelKindOptions 
           (gltf) => {
             loaded = { scene: gltf.scene, animations: gltf.animations };
             if (opts.pixelate !== false) pixelateTextures(loaded.scene);
+            // Procedural meshes (spheres/cylinders) can have mixed winding; render
+            // both sides so curved limbs never show through as holes.
+            eachMaterial(loaded.scene, (m) => (m.side = THREE.DoubleSide));
             resolve();
           },
           undefined,

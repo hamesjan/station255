@@ -34,11 +34,18 @@ export interface CharacterKind {
   create(variation: CharacterVariation): CharacterInstance;
 }
 
-// Data describing how a placed character can be talked to. The game layer turns
-// this into an interactable (dialogue + an optional one-time notebook entry).
+// Data describing how a placed character — or a weird anomaly — can be
+// interacted with. The game layer turns this into an interactable (dialogue +
+// an optional one-time notebook entry).
 export interface NpcSpec {
   position: THREE.Vector3;
   name: string;
   lines: string[];
   note?: { id: string; title: string; body: string };
+  // How close (in metres) you must be to trigger it. Anomalies use a tight
+  // radius so they're hard to pinpoint; people use the comfortable default.
+  radius?: number;
+  // Anomalies read as "examine" rather than "talk to", and their notebook
+  // toast says "logged" instead of "recorded".
+  examine?: boolean;
 }

@@ -15,6 +15,8 @@ export interface NpcInteraction {
   name: string;
   lines: string[];
   note?: { id: string; title: string; body: string };
+  radius?: number; // trigger distance; anomalies set this small to hide them
+  examine?: boolean; // "examine" instead of "talk to"; "logged" instead of "recorded"
 }
 
 // Each frame, finds the interactable the player is closest to *and* roughly

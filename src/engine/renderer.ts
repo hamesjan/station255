@@ -1,8 +1,10 @@
 import * as THREE from 'three';
 
-// Renders the scene into a small offscreen buffer, then upscales that buffer to
-// the screen with nearest-neighbor sampling. That two-step is the core of the
-// Doom look: real 3D, but resolved at ~224p with hard, unfiltered pixels.
+// Renders the scene into an offscreen buffer, then upscales that buffer to the
+// screen. The buffer is resolved at a reduced height (for a soft retro feel)
+// but high enough to stay clean and legible, with MSAA smoothing the many
+// polygon edges. Nearest-neighbor upscaling keeps the pixels crisp rather than
+// blurry.
 export class PixelRenderer {
   readonly renderer: THREE.WebGLRenderer;
   aspect = 1;
@@ -14,7 +16,7 @@ export class PixelRenderer {
   private readonly quad: THREE.Mesh;
   private readonly quadMat: THREE.MeshBasicMaterial;
 
-  constructor(canvas: HTMLCanvasElement, lowHeight = 224) {
+  constructor(canvas: HTMLCanvasElement, lowHeight = 540) {
     this.lowHeight = lowHeight;
 
     this.renderer = new THREE.WebGLRenderer({
@@ -22,13 +24,16 @@ export class PixelRenderer {
       antialias: false,
       powerPreference: 'high-performance',
     });
-    this.renderer.setPixelRatio(1);
+    // Present the (cheap) upscale pass at native device resolution so the image
+    // is sharp on hi-DPI screens; the expensive scene pass stays at lowHeight.
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
     this.rt = new THREE.WebGLRenderTarget(2, this.lowHeight, {
-      minFilter: THREE.NearestFilter,
+      minFilter: THREE.LinearFilter,
       magFilter: THREE.NearestFilter,
       depthBuffer: true,
       stencilBuffer: false,
+      samples: 4, // MSAA: anti-aliases the polygon edges so it reads cleanly
     });
 
     this.quadMat = new THREE.MeshBasicMaterial({ map: this.rt.texture, depthTest: false });

@@ -6,6 +6,10 @@ import type { Input } from './input';
 // so the world owns collision and the player just asks "can I be here?".
 export type CollideFn = (x: number, z: number) => { x: number; z: number };
 
+// The walkable floor height at a given spot — lets the player descend the
+// stairs into the subway concourse instead of being pinned to one level.
+export type FloorFn = (x: number, z: number) => number;
+
 // First-person walker. Stays at eye height on the platform — no jumping or
 // flying — with mouselook and a gentle head-bob while moving.
 export class Player {
@@ -13,6 +17,7 @@ export class Player {
 
   private x: number;
   private z: number;
+  private y = DIMS.floorY; // current floor height under the player (smoothed)
   private yaw = Math.PI; // start facing down the platform (-X end -> +X)
   private pitch = 0;
   private bobPhase = 0;
@@ -32,9 +37,9 @@ export class Player {
 
   // Keyboard-only: arrow keys look, WASD moves. `frozen` holds the player still
   // while a menu/dialogue is open.
-  update(dt: number, input: Input, collide: CollideFn, frozen = false): void {
+  update(dt: number, input: Input, collide: CollideFn, floorAt: FloorFn, frozen = false): void {
     if (frozen) {
-      this.camera.position.set(this.x, DIMS.floorY + DIMS.eyeHeight, this.z);
+      this.camera.position.set(this.x, this.y + DIMS.eyeHeight, this.z);
       this.camera.rotation.set(this.pitch, this.yaw, 0, 'YXZ');
       return;
     }
@@ -68,8 +73,13 @@ export class Player {
       this.bobPhase += dist * 2.3;
     }
 
+    // ease the eye height toward the floor under us, so stairs feel like a
+    // smooth descent rather than a snap between levels
+    const targetY = floorAt(this.x, this.z);
+    this.y += (targetY - this.y) * Math.min(1, dt * 10);
+
     const bob = Math.sin(this.bobPhase) * 0.045;
-    this.camera.position.set(this.x, DIMS.floorY + DIMS.eyeHeight + bob, this.z);
+    this.camera.position.set(this.x, this.y + DIMS.eyeHeight + bob, this.z);
     this.camera.rotation.set(this.pitch, this.yaw, 0, 'YXZ');
   }
 }

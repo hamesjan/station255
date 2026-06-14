@@ -33,12 +33,14 @@ export class Game {
   addNpc(npc: NpcInteraction): void {
     const item: Interactable = {
       position: npc.position,
-      radius: 2.4,
-      prompt: `talk to ${npc.name}`,
+      // Anomalies use a tight radius (and default tighter than people) so you
+      // have to line them up to catch them.
+      radius: npc.radius ?? (npc.examine ? 1.0 : 2.4),
+      prompt: `${npc.examine ? 'examine' : 'talk to'} ${npc.name}`,
       interact: () => {
         this.dialogue.start(npc.name, npc.lines);
         if (npc.note && this.notebook.add(npc.note)) {
-          this.showToast(`recorded: ${npc.note.title}`);
+          this.showToast(`${npc.examine ? 'logged' : 'recorded'}: ${npc.note.title}`);
         }
       },
     };

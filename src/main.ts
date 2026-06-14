@@ -15,7 +15,10 @@ import { DIMS, PALETTE } from './config';
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const hint = document.getElementById('hint') as HTMLElement;
 
-const pixel = new PixelRenderer(canvas, 224);
+// Resolve at a fraction of the display height for a soft retro feel, but keep
+// it high enough to stay clean and readable (and capped so it stays fast).
+const internalHeight = Math.min(720, Math.max(480, Math.round(window.innerHeight * 0.72)));
+const pixel = new PixelRenderer(canvas, internalHeight);
 pixel.setClearColor(PALETTE.skyBottom);
 
 const scene = new THREE.Scene();
@@ -69,7 +72,7 @@ function frame(now: number): void {
   last = now;
 
   station.update(dt);
-  player.update(dt, input, station.collide, game.busy);
+  player.update(dt, input, station.collide, station.floorAt, game.busy);
   game.update(dt, player.camera, input);
   hint.classList.toggle('hidden', started || game.busy);
   input.endFrame();

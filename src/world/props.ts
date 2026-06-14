@@ -1,7 +1,8 @@
 import * as THREE from 'three';
-import { DIMS } from '../config';
+import { DIMS, PALETTE } from '../config';
 import * as tex from './textures';
 import type { Box2D } from './types';
+import { makeTrashcan, makeLockerBank, makeWallPanel, makeHangingSign } from './furniture';
 
 export interface Props {
   group: THREE.Group;
@@ -34,6 +35,26 @@ export function buildProps(): Props {
   group.add(makeWallArt(tex.posterTexture(0), -39, 2.5, 1.0, 1.5));
   group.add(makeWallArt(tex.posterTexture(1), 9, 2.5, 1.0, 1.5));
   group.add(makeWallArt(tex.posterTexture(2), 41, 2.5, 1.0, 1.5));
+
+  // --- subway dressing on the platform: lockers, bins, signage, ads ---
+  const wallZ = DIMS.walkMinZ + 0.05;
+  group.add(makeWallPanel(tex.nameboardTexture(), 8, 3.4, wallZ, 4.2, 0.84));
+  group.add(makeWallPanel(tex.roundelTexture(), -33, 2.7, wallZ, 1.5, 1.5));
+  group.add(makeWallPanel(tex.adTexture(0), 20, 2.4, wallZ, 1.2, 1.8));
+  group.add(makeWallPanel(tex.adTexture(3), -52, 2.4, wallZ, 1.2, 1.8));
+
+  const lockers = makeLockerBank(12, DIMS.walkMinZ + 0.32, DIMS.floorY, 5, 0);
+  group.add(lockers.group);
+  colliders.push(lockers.collider);
+
+  for (const tx of [-12, 36]) {
+    const bin = makeTrashcan(tx, DIMS.walkMinZ + 0.6, DIMS.floorY);
+    group.add(bin.group);
+    colliders.push(bin.collider);
+  }
+
+  // a sign hung over the platform, arrow pointing back toward the stairs down
+  group.add(makeHangingSign(tex.signTexture('SUBWAY', PALETTE.signBlue, 'left'), 2, 3.2, 2.2, 2.0, 0.62));
 
   return {
     group,
