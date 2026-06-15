@@ -1,0 +1,105 @@
+:root {
+  /* 8-bit-ish palette */
+  --bg: #0d0b1a;
+  --bg-2: #161228;
+  --panel: #1e1838;
+  --ink: #e7e3ff;
+  --muted: #8c84b8;
+  --accent: #ff2e88; /* hot magenta */
+  --accent-2: #21e6c1; /* cyan */
+  --accent-3: #ffd23f; /* arcade yellow */
+  --line: #332a5c;
+  --pixel: 'VT323', ui-monospace, monospace;
+  --display: 'Press Start 2P', var(--pixel);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--pixel);
+  font-size: 20px;
+  line-height: 1.5;
+  /* subtle CRT scanlines */
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.18) 0px,
+    rgba(0, 0, 0, 0.18) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  image-rendering: pixelated;
+}
+
+h1,
+h2,
+h3,
+.display {
+  font-family: var(--display);
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+}
+
+a {
+  color: var(--accent-2);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--accent-3);
+}
+
+button,
+input,
+select {
+  font-family: var(--pixel);
+  font-size: 1rem;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1.25rem;
+}
+
+/* Reusable chunky pixel button */
+.btn {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  border: 0;
+  padding: 0.6rem 1rem;
+  font-family: var(--display);
+  font-size: 0.7rem;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #000;
+  transition: transform 0.05s ease;
+}
+.btn:hover {
+  transform: translate(1px, 1px);
+  box-shadow: 3px 3px 0 #000;
+}
+.btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 #000;
+}
+.btn.secondary {
+  background: var(--panel);
+  color: var(--accent-2);
+  border: 2px solid var(--line);
+  box-shadow: none;
+}
+
+.panel {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  padding: 1rem;
+}
