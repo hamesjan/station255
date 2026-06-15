@@ -1,5 +1,6 @@
 <script lang="ts">
   import { extractPalette, toHex, luminance, type RGB } from '$lib/palette';
+  import { track } from '$lib/analytics';
 
   let count = $state(8);
   let palette = $state<RGB[]>([]);
@@ -21,6 +22,7 @@
     if (!ctx) return;
     ctx.drawImage(img, 0, 0, w, h);
     palette = extractPalette(ctx.getImageData(0, 0, w, h), count);
+    track('tool_use', { tool: 'palette-extractor', colors: count });
   }
 
   function loadFile(file: File) {
@@ -65,6 +67,7 @@
 
   function copyAll() {
     copy(palette.map(toHex).join('\n'));
+    track('export', { tool: 'palette-extractor', type: 'copy_all' });
   }
 
   function downloadHex() {

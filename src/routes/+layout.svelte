@@ -1,6 +1,14 @@
 <script lang="ts">
   import '../app.css';
+  import { afterNavigate } from '$app/navigation';
+  import { track } from '$lib/analytics';
+
   let { children } = $props();
+
+  // Track every page view — 'enter' fires on initial load, other types on SPA navigation
+  afterNavigate(({ to }) => {
+    if (to?.url?.pathname) track('pageview');
+  });
 </script>
 
 <header class="container site-header">

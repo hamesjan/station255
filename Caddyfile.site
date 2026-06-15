@@ -1,11 +1,14 @@
 station255.com, www.station255.com {
     root * /root/station255/dist
 
-    # SvelteKit adapter-static prerenders each route to "<route>.html"
-    # (e.g. /palette-extractor -> palette-extractor.html). Try the literal
-    # path, then the .html file (correct per-page SEO meta), then a directory
-    # index, and only fall back to / as a last resort.
-    try_files {path} {path}.html {path}/index.html /index.html
+    # Proxy analytics collection to local analytics server (port 4000)
+    handle /collect {
+        reverse_proxy localhost:4000
+    }
 
-    file_server
+    # SvelteKit adapter-static: try literal path, then .html, then index, fallback to /
+    handle {
+        try_files {path} {path}.html {path}/index.html /index.html
+        file_server
+    }
 }

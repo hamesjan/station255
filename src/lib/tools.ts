@@ -24,14 +24,14 @@ export const tools: Tool[] = [
     name: 'Demake',
     tagline: 'Pixelize a photo into NES / Game Boy / PICO-8 vibes.',
     icon: '👾',
-    live: false
+    live: true
   },
   {
     slug: 'crt',
     name: 'CRT-ify',
     tagline: 'Scanlines, bloom & phosphor glow for any screenshot.',
     icon: '📺',
-    live: false
+    live: true
   },
   {
     slug: 'pixel-text',
