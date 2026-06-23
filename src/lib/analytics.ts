@@ -16,9 +16,12 @@ function getSessionId(): string {
   }
 }
 
+const CONSENT_KEY = 's255_consent';
+
 export function track(event: string, data?: Record<string, unknown>): void {
   if (typeof window === 'undefined' || typeof navigator === 'undefined') return;
   try {
+    if (localStorage.getItem(CONSENT_KEY) !== 'yes') return;
     const payload: Record<string, unknown> = {
       site: SITE,
       page: window.location.pathname,

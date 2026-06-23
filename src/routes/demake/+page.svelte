@@ -93,10 +93,10 @@
 </script>
 
 <svelte:head>
-  <title>Demake / Pixelizer — convert photos to pixel art | Station255</title>
+  <title>Demake / Pixelizer — convert photo to pixel art online, free | Station255</title>
   <meta
     name="description"
-    content="Free online pixelizer and demake tool. Upload any photo and convert it to pixel art using NES, Game Boy, PICO-8, or C64 color palettes. Runs entirely in your browser."
+    content="Free online pixelizer and demake tool. Upload any photo and convert it to pixel art using NES, Game Boy, PICO-8, C64, or terminal palettes. Adjustable pixel size. Runs entirely in your browser — no upload."
   />
 </svelte:head>
 
@@ -157,23 +157,43 @@
 {/if}
 
 <section class="seo panel">
-  <h2>About this tool</h2>
+  <h2>About the Demake tool</h2>
   <p>
-    The Demake tool downscales your image to a low-resolution grid, maps each cell to the closest
-    color in a classic console palette using Euclidean RGB distance, then scales back up — giving
-    you authentic chunky pixel art. It works entirely in your browser; your image never leaves
-    your device.
+    A <strong>demake</strong> is the art of recreating something in a lower-fidelity retro style —
+    as if it existed on an older console. This tool automates the visual side: it downscales your
+    image to a low-resolution grid, maps every pixel to the closest color in a classic hardware
+    palette using Euclidean RGB distance, then scales back up with nearest-neighbor interpolation.
+    The result looks like it came off actual hardware. Everything runs in your browser; your
+    image never leaves your device.
+  </p>
+  <p>
+    Pair this with <a href="/crt">CRT-ify</a> to add scanlines and phosphor glow on top, or use
+    <a href="/dither">Dithering Studio</a> for a different take on palette reduction with
+    Floyd-Steinberg error diffusion.
   </p>
   <h3>Palettes</h3>
-  <p><strong>PICO-8</strong> — 16 colors. The indie fantasy console palette. Punchy and distinctive.</p>
-  <p><strong>Game Boy</strong> — 4 shades of green. The original DMG screen.</p>
-  <p><strong>NES</strong> — 64 colors. The full NES hardware palette.</p>
-  <p><strong>C64</strong> — 16 colors. Commodore 64's vibrant, retro palette.</p>
-  <p><strong>Terminal</strong> — 12 mono-green phosphor shades. Old-school CRT terminal look.</p>
+  <p><strong>PICO-8</strong> — 16 colors. The indie fantasy console palette designed by Lexaloffle. Punchy and instantly recognizable.</p>
+  <p><strong>Game Boy</strong> — 4 shades of green. The original DMG-01 LCD palette. Perfect for monochrome pixel art.</p>
+  <p><strong>NES</strong> — 64 colors. The full hardware palette of the Nintendo Entertainment System, as output by the 2C02 PPU.</p>
+  <p><strong>C64</strong> — 16 colors. The Commodore 64's vibrant VIC-II palette. Saturated and distinctive.</p>
+  <p><strong>Terminal</strong> — 12 phosphor-green shades. Evokes the monochrome CRT monitors of the 1970s and 80s.</p>
+  <h3>Use cases</h3>
+  <p><strong>Before/after posts</strong> — upload a modern photo and share the pixelized result. These get shared constantly on social media and retro gaming communities.</p>
+  <p><strong>Game dev mockups</strong> — quickly prototype what a design or character would look like under console constraints.</p>
+  <p><strong>Streaming overlays</strong> — pixelize a webcam snapshot or scene for retro-themed streams.</p>
+  <p><strong>Profile pictures</strong> — convert a photo into a pixel-art avatar. Combine with <a href="/upscale">Pixel Upscaler</a> to get a crisp 512px PNG.</p>
   <h3>FAQ</h3>
-  <p><strong>Is my image uploaded anywhere?</strong> No. Everything runs locally in your browser.</p>
-  <p><strong>What pixel size should I use?</strong> 4–8px for a subtle retro look, 12–24px for chunky arcade vibes.</p>
-  <p><strong>Can I use the output commercially?</strong> Yes — the processing is done by you in your browser.</p>
+  <p><strong>Is my image uploaded anywhere?</strong> No. Everything runs locally in your browser using HTML5 Canvas. Nothing is sent to a server.</p>
+  <p><strong>What pixel size should I use?</strong> 4–8px for a subtle retro look; 12–24px for chunky, unmistakably arcade vibes. The slider re-processes instantly.</p>
+  <p><strong>Can I use the output commercially?</strong> Yes — the processing is done locally by you. The palette colors themselves are from historical hardware.</p>
+  <p><strong>What's the difference between NES and PICO-8?</strong> NES has 64 colors (the full hardware spec), while PICO-8 is a curated 16-color set designed for maximum contrast and aesthetics. PICO-8 results look more stylized; NES results look more like actual NES screenshots.</p>
+  <div class="see-also">
+    <span class="see-label">Related tools:</span>
+    <a href="/palette-extractor">Palette Extractor</a>
+    <a href="/crt">CRT-ify</a>
+    <a href="/dither">Dithering Studio</a>
+    <a href="/upscale">Pixel Upscaler</a>
+  </div>
 </section>
 
 <style>
@@ -233,7 +253,4 @@
     display: block;
   }
   .pixelated { image-rendering: pixelated; }
-  .seo { margin-top: 2.5rem; }
-  .seo h2 { font-size: 0.9rem; margin-top: 0; }
-  .seo h3 { font-size: 0.8rem; }
 </style>

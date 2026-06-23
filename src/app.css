@@ -1,14 +1,14 @@
 :root {
   /* 8-bit-ish palette */
   --bg: #0d0b1a;
-  --bg-2: #161228;
+  --bg-2: #1b1730;
   --panel: #1e1838;
-  --ink: #e7e3ff;
-  --muted: #8c84b8;
+  --ink: #edeaff;
+  --muted: #b0abd0;
   --accent: #ff2e88; /* hot magenta */
   --accent-2: #21e6c1; /* cyan */
   --accent-3: #ffd23f; /* arcade yellow */
-  --line: #332a5c;
+  --line: #3d3466;
   --pixel: 'VT323', ui-monospace, monospace;
   --display: 'Press Start 2P', var(--pixel);
 }
@@ -28,7 +28,7 @@ body {
   color: var(--ink);
   font-family: var(--pixel);
   font-size: 20px;
-  line-height: 1.5;
+  line-height: 1.65;
   /* subtle CRT scanlines */
   background-image: repeating-linear-gradient(
     0deg,
@@ -102,4 +102,150 @@ select {
   background: var(--panel);
   border: 2px solid var(--line);
   padding: 1rem;
+}
+
+/* ─── Shared tool SEO section ──────────────────── */
+.seo { margin-top: 2.5rem; }
+.seo h2 {
+  font-size: 1rem;
+  margin-top: 0;
+  color: var(--accent-3);
+}
+.seo h3 { font-size: 0.85rem; margin-top: 1.5rem; color: var(--accent-3); }
+.seo p { color: var(--muted); line-height: 1.75; margin: 0.5rem 0; font-size: 1.05rem; }
+.seo p strong { color: var(--ink); }
+.seo code { background: var(--bg); padding: 0.1rem 0.3rem; font-size: 0.95rem; }
+
+/* ─── Cross-tool internal links ─────────────────── */
+.see-also {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+.see-label { color: var(--muted); font-size: 0.9rem; white-space: nowrap; }
+.see-also a {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 0.2rem 0.6rem;
+  font-size: 0.9rem;
+  color: var(--accent-2);
+  white-space: nowrap;
+}
+.see-also a:hover { border-color: var(--accent-2); color: var(--accent-3); }
+
+/* ─── Layout shell ─────────────────────────────── */
+.site-shell {
+  display: flex;
+  align-items: flex-start;
+  min-height: 70vh;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+}
+.sidebar {
+  width: 188px;
+  flex-shrink: 0;
+  border-right: 2px solid var(--line);
+  padding-right: 1rem;
+}
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding-left: 1.5rem;
+}
+
+/* ─── Sidebar items ────────────────────────────── */
+.sidebar-label {
+  font-family: var(--display);
+  font-size: 0.5rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  margin: 1rem 0 0.35rem;
+  padding: 0;
+}
+.sidebar-label:first-child { margin-top: 0; }
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+}
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.25rem 0.35rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+}
+.sidebar-link:not(.soon):hover {
+  color: var(--ink);
+  border-left-color: var(--line);
+}
+.sidebar-link.active {
+  color: var(--accent-3);
+  border-left-color: var(--accent-3);
+}
+.sidebar-icon { width: 1.2rem; text-align: center; }
+.sidebar-name { flex: 1; }
+.sidebar-link.soon { opacity: 0.4; cursor: default; }
+.soon-badge {
+  font-family: var(--display);
+  font-size: 0.38rem;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  padding: 0.1rem 0.2rem;
+}
+
+/* ─── Consent modal ────────────────────────────── */
+.consent-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 100;
+  padding: 1.5rem;
+}
+.consent-box {
+  max-width: 480px;
+  width: 100%;
+  border-color: var(--accent-3) !important;
+}
+.consent-title {
+  font-family: var(--display);
+  font-size: 0.65rem;
+  margin: 0 0 0.75rem;
+  color: var(--accent-3);
+}
+.consent-body {
+  color: var(--muted);
+  font-size: 1rem;
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+.consent-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* ─── Mobile ───────────────────────────────────── */
+@media (max-width: 700px) {
+  .site-shell { flex-direction: column; }
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 2px solid var(--line);
+    padding-right: 0;
+    padding-bottom: 0.75rem;
+  }
+  .sidebar-nav { flex-direction: row; flex-wrap: wrap; }
+  .sidebar-label { display: none; }
+  .main-content { padding-left: 0; padding-top: 1rem; }
 }

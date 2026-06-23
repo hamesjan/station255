@@ -142,10 +142,10 @@
 </script>
 
 <svelte:head>
-  <title>CRT-ify — add scanlines & CRT effects to any image | Station255</title>
+  <title>CRT-ify — add scanlines &amp; CRT effect to any image, free | Station255</title>
   <meta
     name="description"
-    content="Free online CRT effect tool. Add authentic scanlines, chromatic aberration, phosphor glow, and vignette to any image or screenshot. Runs entirely in your browser."
+    content="Free online CRT effect generator. Add authentic scanlines, chromatic aberration, RGB phosphor glow, and vignette to any image or screenshot. 4 adjustable sliders. No upload, runs in your browser."
   />
 </svelte:head>
 
@@ -208,20 +208,38 @@
 {/if}
 
 <section class="seo panel">
-  <h2>About this tool</h2>
+  <h2>About CRT-ify</h2>
   <p>
-    CRT-ify applies four classic CRT monitor effects to your image using browser canvas APIs.
-    Everything runs locally — no upload, no server, no sign-up.
+    CRT-ify applies four composited effects that reproduce the visual character of cathode-ray tube
+    monitors — the screens that defined gaming aesthetics from the 1970s through the late 1990s.
+    The effects are applied entirely in your browser with HTML5 Canvas: no upload, no server, no account needed.
   </p>
-  <h3>Effects</h3>
-  <p><strong>Scanlines</strong> — alternating dark horizontal lines every 2 pixels, mimicking the electron beam structure of a CRT display.</p>
-  <p><strong>Chromatic aberration</strong> — shifts the red and blue color channels horizontally in opposite directions, simulating lens and aperture-grille color fringing.</p>
-  <p><strong>Phosphor mask</strong> — overlays a subtle RGB sub-pixel column pattern, evoking the phosphor dot triads of real CRT screens.</p>
-  <p><strong>Vignette</strong> — a radial gradient darkening the image edges, like the natural falloff of a curved CRT tube.</p>
+  <p>
+    Works best on pixel-art screenshots, retro game captures, and low-resolution images where the
+    scanlines and phosphor grid are large enough to read. Try it after the <a href="/demake">Demake tool</a>
+    for a complete retro pipeline: photo → pixelized → CRT-treated.
+  </p>
+  <h3>Effects explained</h3>
+  <p><strong>Scanlines</strong> — alternating dark horizontal lines every 2 pixels, mimicking the electron-beam raster structure of a CRT display. Real CRTs had a visible gap between each scan line at typical viewing distances.</p>
+  <p><strong>Chromatic aberration</strong> — shifts the red channel right and the blue channel left by a set number of pixels, simulating the color fringing caused by lens dispersion and aperture-grille shadow masks (as seen on Trinitron-style monitors).</p>
+  <p><strong>Phosphor mask</strong> — overlays a repeating pattern of transparent RGB columns every 3 pixels, evoking the phosphor dot or slot-mask sub-pixel layout of real CRT panels.</p>
+  <p><strong>Vignette</strong> — a radial gradient that darkens image edges, replicating the natural brightness falloff of curved CRT glass and electron-gun geometry.</p>
+  <h3>Use cases</h3>
+  <p><strong>Retro game screenshots</strong> — make modern emulator captures look like they were photographed on real hardware.</p>
+  <p><strong>Streaming &amp; video thumbnails</strong> — add instant retro-gaming atmosphere to any image.</p>
+  <p><strong>Social media</strong> — CRT-treated before/after comparisons get shared heavily in gaming and nostalgia communities.</p>
+  <p><strong>Fan art &amp; cover art</strong> — add authenticity to pixel art by layering in the screen hardware that would have displayed it.</p>
   <h3>FAQ</h3>
-  <p><strong>Is my image uploaded anywhere?</strong> No. Canvas operations are 100% local.</p>
-  <p><strong>Why does chromatic aberration look subtle on small images?</strong> The pixel-shift is in screen pixels, so it's more visible on larger images. Try a screenshot or high-res photo.</p>
-  <p><strong>What export format?</strong> PNG, at the original image resolution.</p>
+  <p><strong>Is my image uploaded anywhere?</strong> No. Canvas operations are 100% local in your browser.</p>
+  <p><strong>Why does chromatic aberration look subtle on small images?</strong> The channel shift is measured in absolute pixels, so it's more visible on larger images. For a small sprite, try a 2–4px shift; for a full screenshot, 4–8px.</p>
+  <p><strong>What export format?</strong> PNG, lossless, at the original image resolution.</p>
+  <p><strong>Can I use this on a video?</strong> Not directly — this tool processes still images. For video, you'd need a video editor with a CRT shader (e.g. RetroArch or OBS shaders).</p>
+  <p><strong>What settings look most realistic?</strong> Scanlines 30–40%, chroma 2–4px, phosphor 20–30%, vignette 40–60%. Heavy scanlines (70%+) look more stylized than realistic.</p>
+  <div class="see-also">
+    <span class="see-label">Related tools:</span>
+    <a href="/demake">Demake</a>
+    <a href="/dither">Dithering Studio</a>
+  </div>
 </section>
 
 <style>
@@ -268,7 +286,4 @@
     border: 2px solid var(--line);
     display: block;
   }
-  .seo { margin-top: 2.5rem; }
-  .seo h2 { font-size: 0.9rem; margin-top: 0; }
-  .seo h3 { font-size: 0.8rem; }
 </style>

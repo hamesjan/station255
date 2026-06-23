@@ -1,13 +1,8 @@
-// The catalog that powers the homepage arcade grid.
-// Add a tool here + create src/routes/<slug>/+page.svelte and it shows up.
-
 export type Tool = {
   slug: string;
   name: string;
   tagline: string;
-  /** Emoji/icon shown on the cabinet card. */
   icon: string;
-  /** false = card shows a "soon" badge and is not linked. */
   live: boolean;
 };
 
@@ -15,29 +10,197 @@ export const tools: Tool[] = [
   {
     slug: 'palette-extractor',
     name: 'Palette Extractor',
-    tagline: 'Pull the dominant colors out of any image.',
+    tagline: 'Drop an image in. Get all the colors back as hex codes.',
     icon: '🎨',
-    live: true
+    live: true,
   },
   {
     slug: 'demake',
     name: 'Demake',
-    tagline: 'Pixelize a photo into NES / Game Boy / PICO-8 vibes.',
+    tagline: 'Turn a real photo into a retro console screenshot.',
     icon: '👾',
-    live: true
+    live: true,
   },
   {
     slug: 'crt',
     name: 'CRT-ify',
-    tagline: 'Scanlines, bloom & phosphor glow for any screenshot.',
+    tagline: 'Makes everything look like it came off a 1987 TV.',
     icon: '📺',
-    live: true
+    live: true,
   },
   {
     slug: 'pixel-text',
     name: 'Pixel Text',
-    tagline: 'Turn words into arcade-font PNG logos & banners.',
+    tagline: 'Type something. Download it as a pixel font PNG.',
     icon: '🅰️',
-    live: false
-  }
+    live: true,
+  },
+  {
+    slug: 'dither',
+    name: 'Dithering Studio',
+    tagline: 'Bayer and Floyd-Steinberg dithering. Old tricks, still good.',
+    icon: '▒',
+    live: true,
+  },
+  {
+    slug: 'upscale',
+    name: 'Pixel Upscaler',
+    tagline: 'Blow up sprites without turning them into blurry mush.',
+    icon: '⬆',
+    live: true,
+  },
+  {
+    slug: 'ascii',
+    name: 'ASCII Art',
+    tagline: 'Your photo, rebuilt out of keyboard characters.',
+    icon: '▓',
+    live: true,
+  },
+  {
+    slug: 'avatar',
+    name: '8-bit Avatar',
+    tagline: 'Stick a name in. Get a unique pixel face back.',
+    icon: '◉',
+    live: true,
+  },
+  {
+    slug: 'vhs',
+    name: 'VHS Effect',
+    tagline: 'Your photo + a broken VHS deck. Bad tape, good vibes.',
+    icon: '📼',
+    live: true,
+  },
+  {
+    slug: 'sfx',
+    name: '8-bit SFX',
+    tagline: 'Coin sounds, explosions, lasers. All in your browser.',
+    icon: '🔊',
+    live: true,
+  },
+  {
+    slug: 'sprite-slicer',
+    name: 'Sprite Slicer',
+    tagline: 'Chop a sprite sheet into individual frames.',
+    icon: '✂️',
+    live: true,
+  },
+  {
+    slug: 'badge',
+    name: 'Badge Maker',
+    tagline: 'Retro achievement badges. Slap them on your README.',
+    icon: '🏆',
+    live: true,
+  },
+  {
+    slug: 'color',
+    name: '8-bit Color',
+    tagline: 'Paste any hex code. See it in every retro palette.',
+    icon: '💎',
+    live: true,
+  },
+  {
+    slug: 'bootscreen',
+    name: 'Boot Screen',
+    tagline: 'Fake a DOS boot screen. Makes a great wallpaper.',
+    icon: '💾',
+    live: true,
+  },
+  {
+    slug: 'gradient',
+    name: 'Retro Gradient',
+    tagline: 'Gradients that only use colors from actual old hardware.',
+    icon: '🌈',
+    live: true,
+  },
+  {
+    slug: 'sticker',
+    name: 'Sticker Maker',
+    tagline: 'Thick outline on any image. Instant sticker effect.',
+    icon: '⭐',
+    live: true,
+  },
+  {
+    slug: 'noise',
+    name: 'Pixel Noise',
+    tagline: 'Tileable noise textures. Looks like static, tiles perfectly.',
+    icon: '░',
+    live: true,
+  },
+  {
+    slug: 'waveform',
+    name: 'Waveform Art',
+    tagline: 'See what your audio looks like. Export it as pixel art.',
+    icon: '🎵',
+    live: true,
+  },
+  {
+    slug: 'sprite-painter',
+    name: 'Sprite Painter',
+    tagline: 'Draw pixel art from scratch. Tiny canvas, big fun.',
+    icon: '🖌',
+    live: false,
+  },
+  {
+    slug: 'glitch',
+    name: 'Glitch Art',
+    tagline: 'Channel shifts, pixel sorting, and general image chaos.',
+    icon: '⚡',
+    live: false,
+  },
+  {
+    slug: 'bitcrusher',
+    name: 'Bit Crusher',
+    tagline: 'Make audio sound like a Game Boy.',
+    icon: '📻',
+    live: false,
+  },
+  {
+    slug: 'qr-pixel',
+    name: 'Pixel QR',
+    tagline: 'QR codes that look like they belong here.',
+    icon: '▣',
+    live: false,
+  },
+  {
+    slug: 'console-frame',
+    name: 'Console Frame',
+    tagline: 'Wrap any image in a Game Boy / GBA / NES screen frame.',
+    icon: '🎮',
+    live: false,
+  },
+  {
+    slug: 'color-ramp',
+    name: 'Color Ramp',
+    tagline: 'Two hex codes in. A smooth retro palette between them.',
+    icon: '🌓',
+    live: false,
+  },
+  {
+    slug: 'pattern-tile',
+    name: 'Pattern Tile',
+    tagline: 'Seamless pixel patterns for backgrounds and tiles.',
+    icon: '▦',
+    live: false,
+  },
+  {
+    slug: 'sprite-animator',
+    name: 'Sprite Animator',
+    tagline: 'Upload frames. Preview them looping.',
+    icon: '🎞',
+    live: false,
+  },
+  {
+    slug: 'pixel-clock',
+    name: 'Pixel Clock',
+    tagline: 'A live clock drawn in pixel art. Changes every second.',
+    icon: '⏰',
+    live: false,
+  },
+  {
+    slug: 'type-tester',
+    name: 'Type Tester',
+    tagline: 'See your text in a bunch of retro pixel fonts at once.',
+    icon: '✏',
+    live: false,
+  },
 ];

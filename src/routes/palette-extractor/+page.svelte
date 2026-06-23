@@ -81,10 +81,10 @@
 </script>
 
 <svelte:head>
-  <title>Palette Extractor — pull a color palette from any image | Station255</title>
+  <title>Palette Extractor — pull colors from any image, free | Station255</title>
   <meta
     name="description"
-    content="Free online palette extractor. Upload any image and instantly get its dominant colors as hex swatches you can copy or download. Runs entirely in your browser — no upload, no sign-up."
+    content="Free online color palette extractor. Upload any photo or sprite and instantly get 2–32 dominant hex colors. One-click copy, Aseprite-compatible .hex download. No upload, runs in your browser."
   />
 </svelte:head>
 
@@ -138,17 +138,36 @@
 {/if}
 
 <section class="seo panel">
-  <h2>About this tool</h2>
+  <h2>About the Palette Extractor</h2>
   <p>
-    This palette extractor uses <strong>median-cut color quantization</strong> to find the most
-    representative colors in your image and shows them as hex codes. Click any swatch to copy it,
-    grab them all at once, or download a <code>.hex</code> list you can import into Aseprite,
-    Photoshop, or other pixel-art editors.
+    This tool uses <strong>median-cut color quantization</strong> — the same algorithm used by
+    classic image editors — to divide the color space of your image into buckets and pick the most
+    representative color from each. The result is a compact, balanced palette that captures the
+    visual identity of your image: useful for fan art, game assets, mood boards, or matching
+    a brand's photo palette in CSS.
   </p>
+  <p>
+    Click any swatch to copy its hex code to clipboard. Use <strong>Copy all hex</strong> to grab
+    every color at once as newline-separated hex values, or download a <code>.hex</code> file that
+    Aseprite, Photoshop, and most pixel-art editors can import directly.
+  </p>
+  <h3>Use cases</h3>
+  <p><strong>Pixel-art sprites</strong> — extract the palette from a reference image, then use it in Aseprite or Libresprite to keep your art on-brand.</p>
+  <p><strong>Web &amp; UI design</strong> — pull dominant colors from a photo and use them as CSS variables or a design-token palette.</p>
+  <p><strong>Game dev</strong> — get a palette from concept art and feed it into the <a href="/demake">Demake tool</a> to pixelise photos in the same colors.</p>
+  <p><strong>Retro palettes</strong> — load a screenshot from an old console game and extract its exact color palette for recreation or study.</p>
   <h3>FAQ</h3>
-  <p><strong>Is my image uploaded anywhere?</strong> No. All processing happens locally in your browser.</p>
-  <p><strong>What formats work?</strong> Anything your browser can open — PNG, JPG, WebP, GIF.</p>
-  <p><strong>How many colors can I extract?</strong> Between 2 and 32. Drag the slider to re-extract.</p>
+  <p><strong>Is my image uploaded anywhere?</strong> No. All processing happens locally in your browser using the HTML5 Canvas API. Nothing leaves your device.</p>
+  <p><strong>What image formats work?</strong> Anything your browser can decode — PNG, JPG, WebP, GIF, AVIF. The file picker accepts <code>image/*</code>.</p>
+  <p><strong>How many colors can I extract?</strong> Between 2 and 32. Drag the slider and the palette re-extracts instantly. For most artwork, 8–16 colors gives the best balance.</p>
+  <p><strong>What is a .hex file?</strong> A plain text file with one hex color per line (<code>#ff2e88</code>). Aseprite, Photoshop, and GIMP can all import this format as a color palette.</p>
+  <p><strong>Can I extract a palette from a GIF or animated image?</strong> The tool reads the first frame only. For animated GIFs, consider exporting a representative frame first.</p>
+  <div class="see-also">
+    <span class="see-label">Related tools:</span>
+    <a href="/demake">Demake</a>
+    <a href="/dither">Dithering Studio</a>
+    <a href="/avatar">8-bit Avatar</a>
+  </div>
 </section>
 
 <style>
@@ -209,16 +228,6 @@
     cursor: pointer;
     font-family: var(--pixel);
     font-size: 1rem;
-  }
-  .seo {
-    margin-top: 2.5rem;
-  }
-  .seo h2 {
-    font-size: 0.9rem;
-    margin-top: 0;
-  }
-  .seo h3 {
-    font-size: 0.8rem;
   }
   code {
     background: var(--bg-2);

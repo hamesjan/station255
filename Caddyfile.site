@@ -1,8 +1,12 @@
 station255.com, www.station255.com {
     root * /root/station255/dist
 
-    # Proxy analytics collection to local analytics server (port 4000)
+    # Proxy analytics collection and coin counter to local analytics server (port 4000)
     handle /collect {
+        reverse_proxy localhost:4000
+    }
+
+    handle /coin {
         reverse_proxy localhost:4000
     }
 
