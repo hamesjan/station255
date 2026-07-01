@@ -36,6 +36,7 @@
     </a>
     <span class="brand-sub">the 8-bit tool arcade</span>
     <nav class="header-nav">
+      <a href="/history">History</a>
       <a href="/about">About</a>
       <a href="/privacy">Privacy</a>
     </nav>
@@ -68,6 +69,10 @@
     </nav>
     <p class="sidebar-label">INFO</p>
     <nav class="sidebar-nav">
+      <a href="/history" class="sidebar-link" class:active={$page.url.pathname === '/history'}>
+        <span class="sidebar-icon">📜</span>
+        <span class="sidebar-name">History</span>
+      </a>
       <a href="/about" class="sidebar-link" class:active={$page.url.pathname === '/about'}>
         <span class="sidebar-icon">ℹ</span>
         <span class="sidebar-name">About</span>

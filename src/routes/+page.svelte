@@ -13,7 +13,7 @@
   let animating = $state(false);
 
   onMount(async () => {
-    inserted = localStorage.getItem('s255_coined') === '1';
+    inserted = sessionStorage.getItem('s255_coined') === '1';
     try {
       const res = await fetch('/coin');
       if (res.ok) coinCount = (await res.json()).count;
@@ -28,7 +28,7 @@
       if (res.ok) {
         coinCount = (await res.json()).count;
         inserted = true;
-        localStorage.setItem('s255_coined', '1');
+        sessionStorage.setItem('s255_coined', '1');
         track('coin_insert', {});
       }
     } catch { /* degrade gracefully */ }
