@@ -191,6 +191,25 @@
   </div>
 </footer>
 
+<div class="margin-props" aria-hidden="true">
+  <div class="prop-side left">
+    <div class="prop-lights">
+      {#each ['bulb-m', 'bulb-c', 'bulb-y', 'bulb-m', 'bulb-c'] as b, i}
+        <img src="/props/{b}.png" alt="" class="prop-bulb" style="animation-delay:{i * 0.25}s" />
+      {/each}
+    </div>
+    <img src="/props/couch.png" alt="" class="prop-couch" />
+  </div>
+  <div class="prop-side right">
+    <div class="prop-lights">
+      {#each ['bulb-c', 'bulb-y', 'bulb-m', 'bulb-c', 'bulb-y'] as b, i}
+        <img src="/props/{b}.png" alt="" class="prop-bulb" style="animation-delay:{i * 0.25}s" />
+      {/each}
+    </div>
+    <img src="/props/tv.png" alt="" class="prop-tv" />
+  </div>
+</div>
+
 <Toast />
 
 {#if showConsent}
@@ -296,5 +315,63 @@
   @media (max-width: 700px) {
     .header-nav { display: none; }
     .brand-sub { display: none; }
+  }
+
+  /* ── Margin props — fill the dead space beside the content column ──── */
+  .margin-props { display: none; }
+
+  @media (min-width: 1360px) {
+    .margin-props {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .prop-side {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: calc((100vw - 1000px) / 2);
+      min-width: 160px;
+    }
+    .prop-side.left { left: 0; }
+    .prop-side.right { right: 0; }
+
+    .prop-lights {
+      position: absolute;
+      top: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+    }
+    .prop-side.left .prop-lights { left: 36px; }
+    .prop-side.right .prop-lights { right: 36px; }
+    .prop-bulb {
+      width: 20px;
+      image-rendering: pixelated;
+      animation: prop-twinkle 1.8s ease-in-out infinite;
+      filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.35));
+    }
+    @keyframes prop-twinkle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+
+    .prop-couch, .prop-tv {
+      position: absolute;
+      bottom: 28px;
+      image-rendering: pixelated;
+      opacity: 0.94;
+    }
+    .prop-side.left .prop-couch { left: 18px; width: 150px; }
+    .prop-side.right .prop-tv { right: 26px; width: 108px; }
+  }
+
+  @media (min-width: 1600px) {
+    .prop-side.left .prop-couch { width: 190px; left: 30px; }
+    .prop-side.right .prop-tv { width: 140px; right: 42px; }
+    .prop-bulb { width: 24px; }
   }
 </style>
