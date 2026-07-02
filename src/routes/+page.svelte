@@ -2,11 +2,28 @@
   import { onMount } from 'svelte';
   import { tools } from '$lib/tools';
   import { icons } from '$lib/icons';
+  import { decor } from '$lib/decor';
   import { track } from '$lib/analytics';
   import PixelIcon from '$lib/PixelIcon.svelte';
 
   const live = tools.filter((t) => t.live);
   const soon = tools.filter((t) => !t.live);
+  const bulbs = [decor.bulbM, decor.bulbC, decor.bulbY];
+
+  // Deterministic per-card "scattered" transform — same on server and client
+  // (no Math.random) so there's no hydration mismatch.
+  function hashSlug(slug: string): number {
+    let h = 0;
+    for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) >>> 0;
+    return h;
+  }
+  function scatterStyle(slug: string): string {
+    const h = hashSlug(slug);
+    const rot = (((h % 800) / 100) - 4).toFixed(2);
+    const shift = ((((h >> 8) % 1200) / 100) - 6).toFixed(2);
+    const scale = (0.97 + (((h >> 16) % 700) / 10000)).toFixed(3);
+    return `--rot:${rot}deg;--shift:${shift}px;--scale:${scale};`;
+  }
 
   let coinCount = $state<number | null>(null);
   let inserted = $state(false);
@@ -81,44 +98,66 @@
 </section>
 
 <h2 class="section-label">▶ PLAY NOW</h2>
-<div class="grid">
-  {#each live as tool}
-    <a href="/{tool.slug}" class="card">
-      <div class="card-icon">
-        {#if icons[tool.slug]}
-          <PixelIcon svg={icons[tool.slug]} />
-        {:else}
-          <span class="card-emoji">{tool.icon}</span>
-        {/if}
-      </div>
-      <div class="card-body">
-        <h2 class="card-name">{tool.name}</h2>
-        <p class="card-tag">{tool.tagline}</p>
-      </div>
-      <span class="card-cta">PLAY →</span>
-    </a>
-  {/each}
+<div class="hangout">
+  <div class="lights" aria-hidden="true">
+    {#each Array(14) as _, i}
+      <span class="bulb" style="animation-delay:{(i % 5) * 0.24}s">
+        <PixelIcon svg={bulbs[i % 3]} />
+      </span>
+    {/each}
+  </div>
+
+  <div class="clutter" aria-hidden="true">
+    <img src="/hangout/char-1.png" alt="" class="decor-char" style="bottom:0.4rem;left:0.5%;width:92px;transform:rotate(-3deg);" />
+    <img src="/hangout/char-2.png" alt="" class="decor-char" style="bottom:0.4rem;right:2%;width:92px;transform:rotate(3deg) scaleX(-1);" />
+    <span class="decor-icon" style="bottom:6%;left:19%;width:34px;transform:rotate(-8deg);"><PixelIcon svg={decor.sodaCan} /></span>
+    <span class="decor-icon" style="bottom:3%;left:44%;width:46px;transform:rotate(5deg);"><PixelIcon svg={decor.pizzaBox} /></span>
+    <span class="decor-icon" style="bottom:9%;right:24%;width:36px;transform:rotate(-6deg);"><PixelIcon svg={decor.bananaPeel} /></span>
+    <span class="decor-icon" style="top:10%;right:3%;width:32px;transform:rotate(10deg);"><PixelIcon svg={decor.chipBag} /></span>
+    <span class="decor-icon" style="top:36%;left:1.5%;width:26px;transform:rotate(-14deg);"><PixelIcon svg={decor.paperBall} /></span>
+  </div>
+
+  <div class="grid">
+    {#each live as tool}
+      <a href="/{tool.slug}" class="card" style={scatterStyle(tool.slug)}>
+        <div class="card-icon">
+          {#if icons[tool.slug]}
+            <PixelIcon svg={icons[tool.slug]} />
+          {:else}
+            <span class="card-emoji">{tool.icon}</span>
+          {/if}
+        </div>
+        <div class="card-body">
+          <h2 class="card-name">{tool.name}</h2>
+          <p class="card-tag">{tool.tagline}</p>
+        </div>
+        <span class="card-cta">PLAY →</span>
+      </a>
+    {/each}
+  </div>
 </div>
 
-<h2 class="section-label soon-label">◌ COMING SOON</h2>
-<div class="grid">
-  {#each soon as tool}
-    <div class="card card-soon">
-      <div class="card-icon">
-        {#if icons[tool.slug]}
-          <PixelIcon svg={icons[tool.slug]} />
-        {:else}
-          <span class="card-emoji">{tool.icon}</span>
-        {/if}
+{#if soon.length > 0}
+  <h2 class="section-label soon-label">◌ COMING SOON</h2>
+  <div class="grid">
+    {#each soon as tool}
+      <div class="card card-soon">
+        <div class="card-icon">
+          {#if icons[tool.slug]}
+            <PixelIcon svg={icons[tool.slug]} />
+          {:else}
+            <span class="card-emoji">{tool.icon}</span>
+          {/if}
+        </div>
+        <div class="card-body">
+          <h2 class="card-name">{tool.name}</h2>
+          <p class="card-tag">{tool.tagline}</p>
+        </div>
+        <span class="card-cta soon-cta">SOON</span>
       </div>
-      <div class="card-body">
-        <h2 class="card-name">{tool.name}</h2>
-        <p class="card-tag">{tool.tagline}</p>
-      </div>
-      <span class="card-cta soon-cta">SOON</span>
-    </div>
-  {/each}
-</div>
+    {/each}
+  </div>
+{/if}
 
 <style>
   /* ── Hero ───────────────────────────────────────────── */
@@ -228,11 +267,50 @@
     margin-top: 2.5rem;
   }
 
+  /* ── Hangout floor ──────────────────────────────────── */
+  .hangout {
+    --jitter: 1;
+    position: relative;
+    padding: 0 0.5rem 9rem;
+    background:
+      repeating-linear-gradient(45deg, rgba(255, 46, 136, 0.05) 0 10px, transparent 10px 20px),
+      repeating-linear-gradient(-45deg, rgba(33, 230, 193, 0.05) 0 10px, transparent 10px 20px),
+      repeating-linear-gradient(0deg, rgba(255, 210, 63, 0.04) 0 2px, transparent 2px 22px);
+    border: 2px solid var(--line);
+  }
+
+  .lights {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0.6rem 0.75rem 1rem;
+    border-bottom: 1px dashed var(--line);
+    margin-bottom: 1.25rem;
+  }
+  .bulb { width: 12px; height: 12px; animation: twinkle 1.8s ease-in-out infinite; filter: drop-shadow(0 0 3px currentColor); }
+  .bulb:nth-child(3n+1) { color: var(--accent); }
+  .bulb:nth-child(3n+2) { color: var(--accent-2); }
+  .bulb:nth-child(3n) { color: var(--accent-3); }
+  @keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .clutter { position: absolute; inset: 0; pointer-events: none; }
+  .decor-char, .decor-icon {
+    position: absolute;
+    display: block;
+    z-index: 1;
+    image-rendering: pixelated;
+    opacity: 0.92;
+  }
+  .decor-char { height: auto; }
+  .decor-icon { width: 32px; }
+
   /* ── Tool grid ──────────────────────────────────────── */
   .grid {
+    position: relative;
+    z-index: 2;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 0.75rem;
+    gap: 1.1rem 0.9rem;
     margin-bottom: 0.5rem;
   }
 
@@ -248,15 +326,17 @@
     box-shadow: 4px 4px 0 #000;
     text-decoration: none;
     color: var(--ink);
-    transition: transform 0.06s ease, border-color 0.06s;
+    transition: transform 0.1s ease, border-color 0.06s, box-shadow 0.1s;
     cursor: pointer;
     text-align: center;
+    transform: rotate(calc(var(--rot, 0deg) * var(--jitter))) translateY(calc(var(--shift, 0px) * var(--jitter))) scale(var(--scale, 1));
   }
-  .card:hover {
-    transform: translate(2px, 2px);
+  .card:hover, .card:focus-visible {
+    transform: translate(2px, 2px) rotate(0deg) scale(1.03);
     box-shadow: 2px 2px 0 #000;
     border-color: var(--accent-2);
     color: var(--ink);
+    z-index: 3;
   }
   .card-soon {
     opacity: 0.45;
@@ -303,7 +383,11 @@
   .soon-cta { color: var(--muted); }
 
   @media (max-width: 480px) {
-    .grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem 0.5rem; }
     .card-icon { width: 48px; height: 48px; }
+    .hangout { --jitter: 0.4; padding-bottom: 6rem; }
+    .decor-char { width: 60px !important; }
+    .decor-icon { width: 22px !important; }
+    .lights { padding: 0.5rem 0.4rem 0.75rem; }
   }
 </style>

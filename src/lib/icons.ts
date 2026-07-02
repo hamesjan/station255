@@ -1,4 +1,4 @@
-const COLORS: Record<string, string> = {
+export const COLORS: Record<string, string> = {
   B: '#0d0b1a',
   W: '#ffffff',
   M: '#ff2e88',
@@ -11,9 +11,11 @@ const COLORS: Record<string, string> = {
   R: '#ff5555',
   P: '#3d3466',
   D: '#1e1838',
+  T: '#e8b878',
+  K: '#7a4a2a',
 };
 
-function icon(rows: string[]): string {
+export function icon(rows: string[]): string {
   const cols = rows[0].length;
   const rects = rows
     .flatMap((row, y) =>
