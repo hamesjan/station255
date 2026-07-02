@@ -110,7 +110,7 @@
   <meta name="description" content="Generate beautiful gradients snapped to retro console color palettes — PICO-8, NES, Game Boy, C64. Linear, radial, and conic modes. Download as PNG." />
 </svelte:head>
 
-<h1 class="tool-title">🌈 Retro Gradient</h1>
+<h1 class="tool-title">Retro Gradient</h1>
 <p class="tool-sub">Build gradients with retro console palettes — snap pixels to authentic 8-bit colors.</p>
 
 <div class="layout">

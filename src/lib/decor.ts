@@ -53,4 +53,37 @@ export const decor: Record<string, string> = {
   bulbM: icon(['.M.', 'MMM', '.M.']),
   bulbC: icon(['.C.', 'CCC', '.C.']),
   bulbY: icon(['.Y.', 'YYY', '.Y.']),
+  coin: icon([
+    '.YYYY...',
+    'YYYYYY..',
+    'YYOOYY..',
+    'YYOOYY..',
+    'YYYYYY..',
+    '.YYYY...',
+  ]),
 };
+
+// Hangout mascot — a hand-drawn sitting pixel character (mirrored halves,
+// same 12-wide symmetric shape, two recolors so it reads as two people).
+const mascotRows: string[] = (() => {
+  const halves = [
+    '..KKKK',
+    '.KKKKK',
+    '.KTTTT',
+    '.KTBTT',
+    '.KTTTT',
+    '..TTTT',
+    '..CCCC',
+    'CCCCCC',
+    'CCCCCC',
+    '.CCCCC',
+    '.PPPPP',
+    'PPPPPP',
+    'PP..PP',
+    'DD..DD',
+  ];
+  return halves.map((h) => h + [...h].reverse().join(''));
+})();
+
+export const mascot1 = icon(mascotRows);
+export const mascot2 = icon(mascotRows, { C: '#ffd23f', K: '#3d3466' });

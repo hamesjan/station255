@@ -146,7 +146,7 @@
   <meta name="description" content="Upload any audio file and generate a pixel-art waveform visualization as PNG. Choose retro palette colors, bar style, and dimensions. Free, runs entirely in your browser." />
 </svelte:head>
 
-<h1 class="tool-title">🎵 Waveform Art</h1>
+<h1 class="tool-title">Waveform Art</h1>
 <p class="tool-sub">Visualize any audio file as a pixel-art waveform image. Your audio never leaves your browser.</p>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->

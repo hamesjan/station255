@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { tools } from '$lib/tools';
   import { icons } from '$lib/icons';
-  import { decor } from '$lib/decor';
+  import { decor, mascot1, mascot2 } from '$lib/decor';
   import { track } from '$lib/analytics';
   import PixelIcon from '$lib/PixelIcon.svelte';
 
@@ -73,7 +73,7 @@
     >
       <span class="slot-gap"></span>
       {#if animating}
-        <span class="coin-drop">🪙</span>
+        <span class="coin-drop"><PixelIcon svg={decor.coin} /></span>
       {/if}
       <span class="slot-body">
         {#if inserted}
@@ -90,7 +90,8 @@
       <p class="hero-sub">{live.length} tools live · {soon.length} coming · 100% browser · free</p>
       {#if coinCount !== null}
         <p class="coin-tally">
-          🪙 × {coinCount.toLocaleString()} coins inserted{inserted ? ' — including yours' : ''}
+          <span class="coin-tally-icon"><PixelIcon svg={decor.coin} /></span>
+          × {coinCount.toLocaleString()} coins inserted{inserted ? ' — including yours' : ''}
         </p>
       {/if}
     </div>
@@ -108,8 +109,8 @@
   </div>
 
   <div class="clutter" aria-hidden="true">
-    <img src="/hangout/char-1.png" alt="" class="decor-char" style="bottom:0.4rem;left:0.5%;width:92px;transform:rotate(-3deg);" />
-    <img src="/hangout/char-2.png" alt="" class="decor-char" style="bottom:0.4rem;right:2%;width:92px;transform:rotate(3deg) scaleX(-1);" />
+    <span class="decor-char" style="bottom:0.4rem;left:0.5%;width:76px;transform:rotate(-3deg);"><PixelIcon svg={mascot1} /></span>
+    <span class="decor-char" style="bottom:0.4rem;right:2%;width:76px;transform:rotate(3deg) scaleX(-1);"><PixelIcon svg={mascot2} /></span>
     <span class="decor-icon" style="bottom:6%;left:19%;width:34px;transform:rotate(-8deg);"><PixelIcon svg={decor.sodaCan} /></span>
     <span class="decor-icon" style="bottom:3%;left:44%;width:46px;transform:rotate(5deg);"><PixelIcon svg={decor.pizzaBox} /></span>
     <span class="decor-icon" style="bottom:9%;right:24%;width:36px;transform:rotate(-6deg);"><PixelIcon svg={decor.bananaPeel} /></span>
@@ -183,11 +184,15 @@
   @keyframes blink { 50% { opacity: 0.5; } }
   .hero-sub { color: var(--muted); font-size: 1rem; margin: 0; }
   .coin-tally {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
     font-family: var(--display);
     font-size: 0.5rem;
     color: var(--accent-3);
     margin: 0.6rem 0 0;
   }
+  .coin-tally-icon { width: 12px; height: 15px; flex-shrink: 0; }
 
   /* ── Coin slot ──────────────────────────────────────── */
   .coin-slot {
@@ -240,8 +245,9 @@
     position: absolute;
     top: -14px;
     left: 50%;
+    width: 14px;
+    height: 11px;
     transform: translateX(-50%);
-    font-size: 1.1rem;
     pointer-events: none;
     z-index: 5;
     animation: coin-fall 0.65s ease-in forwards;

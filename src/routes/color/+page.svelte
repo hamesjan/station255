@@ -88,7 +88,7 @@
   <meta name="description" content="Convert colors between hex, RGB, and HSL. See the nearest color in PICO-8, NES, Game Boy, C64, and Terminal palettes. Free online color converter with retro palette support." />
 </svelte:head>
 
-<h1 class="tool-title">💎 8-bit Color</h1>
+<h1 class="tool-title">8-bit Color</h1>
 <p class="tool-sub">Explore any color: convert hex ↔ RGB ↔ HSL and find the nearest retro console color.</p>
 
 <div class="color-layout">

@@ -189,7 +189,7 @@
   <meta name="description" content="Generate classic 8-bit sound effects in your browser — coin, jump, laser, explosion, powerup and more. Adjust pitch and volume, then download as WAV. No plugins needed." />
 </svelte:head>
 
-<h1 class="tool-title">🔊 8-bit SFX Generator</h1>
+<h1 class="tool-title">8-bit SFX Generator</h1>
 <p class="tool-sub">Synthesize retro sound effects in real time. Preview and download as WAV — fully offline, no upload.</p>
 
 <div class="global-controls panel">

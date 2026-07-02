@@ -125,7 +125,7 @@
   <meta name="description" content="Add a pixel-perfect outline border to any sprite or image PNG. Choose thickness and color — great for Discord stickers, game sprites, and stream overlays. Free, runs in browser." />
 </svelte:head>
 
-<h1 class="tool-title">⭐ Sticker Maker</h1>
+<h1 class="tool-title">Sticker Maker</h1>
 <p class="tool-sub">Add a pixel-perfect outline to any sprite or image — great for Discord stickers and game assets. Works best with transparent PNGs.</p>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->

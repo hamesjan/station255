@@ -137,7 +137,7 @@
   <meta name="description" content="Design retro achievement badges in pixel art style. Custom icon, name, stars, XP, and tier (bronze/silver/gold/platinum). Download as PNG for READMEs, streams, and games." />
 </svelte:head>
 
-<h1 class="tool-title">🏆 Badge Maker</h1>
+<h1 class="tool-title">Badge Maker</h1>
 <p class="tool-sub">Design retro achievement badges — great for GitHub READMEs, Twitch streams, and game UIs.</p>
 
 <div class="layout">

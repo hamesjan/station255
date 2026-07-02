@@ -186,6 +186,8 @@ select {
   text-decoration: none;
   border-left: 2px solid transparent;
   cursor: pointer;
+  transform: rotate(var(--srot, 0deg)) translateX(var(--sshift, 0px));
+  transition: transform 0.08s ease, color 0.08s, border-color 0.08s;
 }
 .sidebar-link:not(.soon):hover {
   color: var(--ink);
@@ -195,7 +197,12 @@ select {
   color: var(--accent-3);
   border-left-color: var(--accent-3);
 }
-.sidebar-icon { width: 1.2rem; text-align: center; }
+.sidebar-link:not(.soon):hover,
+.sidebar-link.active {
+  transform: none;
+}
+.sidebar-icon { width: 1.2rem; height: 1.2rem; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.sidebar-emoji { font-size: 1rem; line-height: 1; }
 .sidebar-name { flex: 1; }
 .sidebar-link.soon { opacity: 0.4; cursor: default; }
 .soon-badge {

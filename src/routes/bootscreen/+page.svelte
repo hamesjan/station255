@@ -192,7 +192,7 @@ Booting from hard disk...`,
   <meta name="description" content="Create DOS, AMI BIOS, and Linux terminal boot screen images. Custom text, blinking cursor, authentic retro styles. Download as PNG — runs entirely in your browser." />
 </svelte:head>
 
-<h1 class="tool-title">💾 Boot Screen Maker</h1>
+<h1 class="tool-title">Boot Screen Maker</h1>
 <p class="tool-sub">Render a DOS, BIOS, or Linux terminal screen as a PNG. Perfect for wallpapers, game assets, and thumbnails.</p>
 
 <div class="style-tabs">

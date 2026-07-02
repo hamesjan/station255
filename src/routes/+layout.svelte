@@ -7,8 +7,20 @@
   import { tools } from '$lib/tools';
   import { showToast } from '$lib/toast-store.svelte';
   import Toast from '$lib/Toast.svelte';
+  import { icons } from '$lib/icons';
+  import PixelIcon from '$lib/PixelIcon.svelte';
 
   let { children } = $props();
+
+  // Subtle deterministic per-link jitter for the sidebar — same idea as the
+  // homepage card scatter, toned way down since this is real nav on every page.
+  function navJitter(key: string): string {
+    let h = 0;
+    for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0;
+    const rot = (((h % 300) / 100) - 1.5).toFixed(2);
+    const shift = ((((h >> 8) % 500) / 100) - 2.5).toFixed(2);
+    return `--srot:${rot}deg;--sshift:${shift}px;`;
+  }
   let showConsent = $state(false);
   let konamiUnlocked = $state(false);
   let logoSpin = $state(false);
@@ -120,13 +132,26 @@
             href="/{tool.slug}"
             class="sidebar-link"
             class:active={$page.url.pathname === '/' + tool.slug}
+            style={navJitter(tool.slug)}
           >
-            <span class="sidebar-icon">{tool.icon}</span>
+            <span class="sidebar-icon">
+              {#if icons[tool.slug]}
+                <PixelIcon svg={icons[tool.slug]} />
+              {:else}
+                <span class="sidebar-emoji">{tool.icon}</span>
+              {/if}
+            </span>
             <span class="sidebar-name">{tool.name}</span>
           </a>
         {:else}
-          <span class="sidebar-link soon">
-            <span class="sidebar-icon">{tool.icon}</span>
+          <span class="sidebar-link soon" style={navJitter(tool.slug)}>
+            <span class="sidebar-icon">
+              {#if icons[tool.slug]}
+                <PixelIcon svg={icons[tool.slug]} />
+              {:else}
+                <span class="sidebar-emoji">{tool.icon}</span>
+              {/if}
+            </span>
             <span class="sidebar-name">{tool.name}</span>
             <span class="soon-badge">SOON</span>
           </span>
@@ -135,16 +160,16 @@
     </nav>
     <p class="sidebar-label">INFO</p>
     <nav class="sidebar-nav">
-      <a href="/history" class="sidebar-link" class:active={$page.url.pathname === '/history'}>
-        <span class="sidebar-icon">📜</span>
+      <a href="/history" class="sidebar-link" class:active={$page.url.pathname === '/history'} style={navJitter('history')}>
+        <span class="sidebar-icon"><PixelIcon svg={icons.history} /></span>
         <span class="sidebar-name">History</span>
       </a>
-      <a href="/about" class="sidebar-link" class:active={$page.url.pathname === '/about'}>
-        <span class="sidebar-icon">ℹ</span>
+      <a href="/about" class="sidebar-link" class:active={$page.url.pathname === '/about'} style={navJitter('about')}>
+        <span class="sidebar-icon"><PixelIcon svg={icons.about} /></span>
         <span class="sidebar-name">About</span>
       </a>
-      <a href="/privacy" class="sidebar-link" class:active={$page.url.pathname === '/privacy'}>
-        <span class="sidebar-icon">🔒</span>
+      <a href="/privacy" class="sidebar-link" class:active={$page.url.pathname === '/privacy'} style={navJitter('privacy')}>
+        <span class="sidebar-icon"><PixelIcon svg={icons.privacy} /></span>
         <span class="sidebar-name">Privacy</span>
       </a>
     </nav>

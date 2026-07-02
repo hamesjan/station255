@@ -96,7 +96,7 @@
   <meta name="description" content="Upload a sprite sheet, set tile width and height, and download individual frames as PNG files. Free online sprite sheet cutter — works in your browser, no upload." />
 </svelte:head>
 
-<h1 class="tool-title">✂️ Sprite Sheet Slicer</h1>
+<h1 class="tool-title">Sprite Sheet Slicer</h1>
 <p class="tool-sub">Upload a sprite sheet, set the tile grid, and extract individual frames. Your files stay in your browser.</p>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->

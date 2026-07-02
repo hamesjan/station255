@@ -150,7 +150,7 @@
   <meta name="description" content="Add authentic VHS tape effects to any photo free online. Color bleeding, tracking glitches, grain, and vignette — all in your browser. No upload, no signup." />
 </svelte:head>
 
-<h1 class="tool-title">📼 VHS Effect</h1>
+<h1 class="tool-title">VHS Effect</h1>
 <p class="tool-sub">Add tape artifacts — color bleed, row jitter, grain — to any image. Your image never leaves your browser.</p>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->

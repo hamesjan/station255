@@ -15,12 +15,13 @@ export const COLORS: Record<string, string> = {
   K: '#7a4a2a',
 };
 
-export function icon(rows: string[]): string {
+export function icon(rows: string[], overrides?: Record<string, string>): string {
+  const palette = overrides ? { ...COLORS, ...overrides } : COLORS;
   const cols = rows[0].length;
   const rects = rows
     .flatMap((row, y) =>
       [...row].map((c, x) =>
-        c === '.' ? null : `<rect x="${x}" y="${y}" width="1" height="1" fill="${COLORS[c]}"/>`
+        c === '.' ? null : `<rect x="${x}" y="${y}" width="1" height="1" fill="${palette[c]}"/>`
       )
     )
     .filter(Boolean)
@@ -261,13 +262,13 @@ export const icons: Record<string, string> = {
   ]),
 
   'qr-pixel': icon([
-    'BBBBBBB.',
-    'B.....B.',
-    'B.BBB.B.',
-    'B.B.B.B.',
-    'B.BBB.B.',
-    'B.....B.',
-    'BBBBBBB.',
+    'WWWWWWW.',
+    'W.....W.',
+    'W.WWW.W.',
+    'W.W.W.W.',
+    'W.WWW.W.',
+    'W.....W.',
+    'WWWWWWW.',
     '........',
   ]),
 
@@ -334,6 +335,271 @@ export const icons: Record<string, string> = {
     'CCCC....',
     '........',
     'YYYYYYYY',
+    '........',
+  ]),
+
+  'pixelate': icon([
+    'MMMMCCCC',
+    'MMMMCCCC',
+    'MMMMCCCC',
+    'MMMMCCCC',
+    'YYYYLLLL',
+    'YYYYLLLL',
+    'YYYYLLLL',
+    'YYYYLLLL',
+  ]),
+
+  'favicon': icon([
+    'GGGGGGGG',
+    'GBBB....',
+    'GB.B....',
+    'GBBB....',
+    'G.......',
+    'GGGGGGGG',
+    '........',
+    '........',
+  ]),
+
+  'palette-db': icon([
+    'BBBBBBBB',
+    'BMCYLNRB',
+    'BBBBBBBB',
+    'BOYCMLNB',
+    'BBBBBBBB',
+    'BRNMYLCB',
+    'BBBBBBBB',
+    '........',
+  ]),
+
+  'snake': icon([
+    '........',
+    '.NNN....',
+    '...N....',
+    '...N....',
+    '.NNN....',
+    '.N......',
+    '.N....R.',
+    '........',
+  ]),
+
+  'breakout': icon([
+    'MMMMMMMM',
+    '........',
+    'YYYYYYYY',
+    '........',
+    '....W...',
+    '........',
+    '..GGGG..',
+    '........',
+  ]),
+
+  'life': icon([
+    '........',
+    '..C.....',
+    '...C....',
+    '.CCC....',
+    '........',
+    '........',
+    '........',
+    '........',
+  ]),
+
+  'chiptune': icon([
+    'C.C.C.C.',
+    'C.C.C.C.',
+    'CCCCCCCC',
+    'C.C.C.C.',
+    'C.C.C.C.',
+    'CCCCCCCC',
+    '........',
+    '........',
+  ]),
+
+  'pixel-banner': icon([
+    'MMMMMMMM',
+    'M......M',
+    'M.WWWW.M',
+    'M......M',
+    'MMMMMMMM',
+    '.M....M.',
+    '..M..M..',
+    '........',
+  ]),
+
+  'matrix': icon([
+    'N.N.N.N.',
+    'N.N.N.N.',
+    '.N.N.N.N',
+    'N.N.N.N.',
+    '.N.N.N.N',
+    'N.N.N.N.',
+    '.N.N.N.N',
+    'N.N.N.N.',
+  ]),
+
+  'char-editor': icon([
+    '..WW....',
+    '..WW....',
+    '.W..W...',
+    '.WWWW...',
+    'W....W..',
+    'W....W..',
+    '........',
+    'GGGGGGGG',
+  ]),
+
+  'css-pixels': icon([
+    '...W....',
+    '..W.....',
+    '.W..MM..',
+    '.W..MM..',
+    '..W.....',
+    '...W....',
+    '........',
+    '........',
+  ]),
+
+  'mosaic': icon([
+    'MMCCYYLL',
+    'MMCCYYLL',
+    'CCYYLLMM',
+    'CCYYLLMM',
+    'YYLLMMCC',
+    'YYLLMMCC',
+    'LLMMCCYY',
+    'LLMMCCYY',
+  ]),
+
+  'name-card': icon([
+    'BBBBBBBB',
+    'BWWBGGGB',
+    'BWWBGGGB',
+    'BBBBGGGB',
+    'BGGGGGGB',
+    'BGGGGGGB',
+    'BBBBBBBB',
+    '........',
+  ]),
+
+  'color-wheel': icon([
+    '..MMYY..',
+    '.M....Y.',
+    'C..BB..O',
+    'C..BB..O',
+    '.L....N.',
+    '..LLNN..',
+    '........',
+    '........',
+  ]),
+
+  'sprite-flip': icon([
+    '..W..W..',
+    '.WW..WW.',
+    'WWW..WWW',
+    '.WW..WW.',
+    '..W..W..',
+    '........',
+    'MMM..CCC',
+    '........',
+  ]),
+
+  'contrast-checker': icon([
+    '..WWBB..',
+    '.WWWBBB.',
+    'WWWWBBBB',
+    'WWWWBBBB',
+    'WWWWBBBB',
+    '.WWWBBB.',
+    '..WWBB..',
+    '........',
+  ]),
+
+  'sprite-packer': icon([
+    'MMMMCCC.',
+    'MMMMCCC.',
+    'MMMMYYY.',
+    'LLLLYYY.',
+    'LLLLYYY.',
+    'RRRRRRR.',
+    'RRRRRRR.',
+    '........',
+  ]),
+
+  'tilemap-editor': icon([
+    'NGNGNGNG',
+    'GNGNGNGN',
+    'NGNGMMGN',
+    'GNGNMMGN',
+    'NGNGNGNG',
+    'GNGNGNGN',
+    'NGNGNGNG',
+    '........',
+  ]),
+
+  'gif-frames': icon([
+    'BBBBBBBB',
+    'BW.BW.BW',
+    'BBBBBBBB',
+    'BBBBBBBB',
+    'BW.BW.BW',
+    'BBBBBBBB',
+    '........',
+    '........',
+  ]),
+
+  'pong': icon([
+    'C......M',
+    'C......M',
+    'C......M',
+    'C..W...M',
+    'C......M',
+    'C......M',
+    '........',
+    '........',
+  ]),
+
+  '256': icon([
+    'YYYYYYYY',
+    'Y......Y',
+    'Y.WWWW.Y',
+    'Y.W.WW.Y',
+    'Y.WWWW.Y',
+    'Y......Y',
+    'YYYYYYYY',
+    '........',
+  ]),
+
+  // ── Site nav (not tools, but reuse the same lookup + rendering) ──────────
+  'history': icon([
+    '.WWWWWW.',
+    'W......W',
+    'W.MMMM.W',
+    'W......W',
+    'W.MMMM.W',
+    'W......W',
+    '.WWWWWW.',
+    '........',
+  ]),
+
+  'about': icon([
+    '..WWWW..',
+    '.W....W.',
+    'W..WW..W',
+    'W..WW..W',
+    'W..WW..W',
+    'W..WW..W',
+    '.W....W.',
+    '..WWWW..',
+  ]),
+
+  'privacy': icon([
+    '..GGGG..',
+    '.G....G.',
+    '.G....G.',
+    'GGGGGGGG',
+    'G.GGGG.G',
+    'G.G..G.G',
+    'GGGGGGGG',
     '........',
   ]),
 };
