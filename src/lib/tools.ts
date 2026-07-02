@@ -309,4 +309,47 @@ export const tools: Tool[] = [
     icon: '↔',
     live: true,
   },
+  // ── New tools batch 3 ──────────────────────────────────────────────────────
+  {
+    slug: 'contrast-checker',
+    name: 'Contrast Checker',
+    tagline: 'WCAG contrast ratios, plus which retro palette colors actually pass.',
+    icon: '◐',
+    live: true,
+  },
+  {
+    slug: 'sprite-packer',
+    name: 'Sprite Packer',
+    tagline: 'Pack loose sprite images into one atlas PNG + JSON coordinate map.',
+    icon: '▤',
+    live: true,
+  },
+  {
+    slug: 'tilemap-editor',
+    name: 'Tilemap Editor',
+    tagline: 'Paint a tile map from any tileset. Export PNG and JSON.',
+    icon: '▧',
+    live: true,
+  },
+  {
+    slug: 'gif-frames',
+    name: 'GIF Frame Extractor',
+    tagline: 'Drop an animated GIF, get every frame back as PNGs.',
+    icon: '🎬',
+    live: true,
+  },
+  {
+    slug: 'pong',
+    name: 'Pong',
+    tagline: 'The one that started it all. Versus CPU or 2-player local.',
+    icon: '🏓',
+    live: true,
+  },
+  {
+    slug: '256',
+    name: '256',
+    tagline: "2048's mechanics, Station255's number. Merge tiles, reach 256.",
+    icon: '🔢',
+    live: true,
+  },
 ];

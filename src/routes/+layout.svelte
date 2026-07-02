@@ -2,15 +2,35 @@
   import '../app.css';
   import { afterNavigate } from '$app/navigation';
   import { page } from '$app/stores';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { track } from '$lib/analytics';
   import { tools } from '$lib/tools';
+  import { showToast } from '$lib/toast-store.svelte';
+  import Toast from '$lib/Toast.svelte';
 
   let { children } = $props();
   let showConsent = $state(false);
+  let konamiUnlocked = $state(false);
+  let logoSpin = $state(false);
 
   onMount(() => {
     if (localStorage.getItem('s255_consent') === null) showConsent = true;
+    try { konamiUnlocked = localStorage.getItem('s255_konami') === '1'; } catch {}
+
+    console.log(
+      '%c◚ STATION255 ◚',
+      'font-family:monospace; font-size:20px; font-weight:bold; color:#ff2e88; text-shadow: 2px 2px 0 #21e6c1;'
+    );
+    console.log(
+      '%cthe 8-bit tool arcade — poking around? nice. this whole site is one static SvelteKit build, no backend, no third-party trackers. try the Konami code.',
+      'color:#b0abd0; font-size:12px;'
+    );
+
+    window.addEventListener('keydown', onKonamiKey);
+  });
+
+  onDestroy(() => {
+    if (typeof window !== 'undefined') window.removeEventListener('keydown', onKonamiKey);
   });
 
   function acceptConsent() {
@@ -27,12 +47,58 @@
   afterNavigate(({ to }) => {
     if (to?.url?.pathname) track('pageview');
   });
+
+  // ── Easter egg: Konami code ──────────────────────────────────────────
+  const KONAMI: string[] = ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowleft', 'arrowright', 'arrowleft', 'arrowright', 'b', 'a'];
+  let konamiProgress = 0;
+
+  function onKonamiKey(e: KeyboardEvent) {
+    const target = e.target as HTMLElement | null;
+    if (target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return;
+    if (target?.isContentEditable) return;
+    const key = e.key.toLowerCase();
+    if (key === KONAMI[konamiProgress]) {
+      konamiProgress++;
+      if (konamiProgress === KONAMI.length) {
+        konamiProgress = 0;
+        triggerKonami();
+      }
+    } else {
+      konamiProgress = key === KONAMI[0] ? 1 : 0;
+    }
+  }
+
+  function triggerKonami() {
+    if (typeof document !== 'undefined') {
+      document.body.classList.add('konami-glitch');
+      setTimeout(() => document.body.classList.remove('konami-glitch'), 2500);
+    }
+    showToast('★ CHEAT ACTIVATED — 30 LIVES ADDED');
+    konamiUnlocked = true;
+    try { localStorage.setItem('s255_konami', '1'); } catch {}
+    track('easter_egg', { type: 'konami' });
+  }
+
+  // ── Easter egg: mash the logo ────────────────────────────────────────
+  let logoClicks: number[] = [];
+  function onLogoClick() {
+    const now = Date.now();
+    logoClicks = [...logoClicks.filter((t) => now - t < 2000), now];
+    if (logoClicks.length >= 8) {
+      logoClicks = [];
+      logoSpin = true;
+      setTimeout(() => { logoSpin = false; }, 900);
+      showToast('▦ 8-BIT MASHER — you found the logo easter egg');
+      track('easter_egg', { type: 'logo_mash' });
+    }
+  }
 </script>
 
 <header class="site-header">
   <div class="container header-inner">
-    <a href="/" class="brand">
+    <a href="/" class="brand" class:logo-spin={logoSpin} onclick={onLogoClick}>
       <span class="brand-mark">▚</span>STATION<span class="num">255</span>
+      {#if konamiUnlocked}<span class="konami-star" title="Konami code found">★</span>{/if}
     </a>
     <span class="brand-sub">the 8-bit tool arcade</span>
     <nav class="header-nav">
@@ -100,6 +166,8 @@
   </div>
 </footer>
 
+<Toast />
+
 {#if showConsent}
   <div class="consent-overlay" role="dialog" aria-modal="true" aria-label="Cookie consent">
     <div class="consent-box panel">
@@ -147,6 +215,33 @@
   .brand:hover { color: var(--ink); }
   .brand-mark { color: var(--accent); margin-right: 0.35rem; }
   .num { color: var(--accent-3); }
+  .konami-star { color: var(--accent-3); margin-left: 0.35rem; animation: konami-twinkle 2s ease-in-out infinite; }
+  .brand.logo-spin { display: inline-block; animation: logo-spin 0.9s ease-in-out; }
+
+  @keyframes konami-twinkle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  @keyframes logo-spin {
+    0% { transform: rotate(0deg); filter: hue-rotate(0deg); }
+    100% { transform: rotate(360deg); filter: hue-rotate(360deg); }
+  }
+
+  :global(body.konami-glitch) {
+    animation: konami-shake 0.4s ease-in-out 0s 4, konami-hue 2.5s linear;
+  }
+  @keyframes konami-shake {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-4px, 3px); }
+    40% { transform: translate(4px, -3px); }
+    60% { transform: translate(-3px, -2px); }
+    80% { transform: translate(3px, 2px); }
+  }
+  @keyframes konami-hue {
+    0% { filter: hue-rotate(0deg) saturate(1); }
+    50% { filter: hue-rotate(180deg) saturate(2); }
+    100% { filter: hue-rotate(360deg) saturate(1); }
+  }
   .brand-sub { color: var(--muted); font-size: 1rem; }
   .header-nav {
     margin-left: auto;
