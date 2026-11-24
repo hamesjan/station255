@@ -1,9 +1,9 @@
 <script lang="ts">
   import '../app.css';
-  import { afterNavigate } from '$app/navigation';
+  import { afterNavigate, beforeNavigate } from '$app/navigation';
   import { page } from '$app/stores';
   import { onMount, onDestroy } from 'svelte';
-  import { track } from '$lib/analytics';
+  import { track, trackPageview, trackLeave, initAnalytics } from '$lib/analytics';
   import { tools } from '$lib/tools';
   import { showToast } from '$lib/toast-store.svelte';
   import Toast from '$lib/Toast.svelte';
@@ -39,6 +39,7 @@
     );
 
     window.addEventListener('keydown', onKonamiKey);
+    initAnalytics();
   });
 
   onDestroy(() => {
@@ -48,7 +49,8 @@
   function acceptConsent() {
     localStorage.setItem('s255_consent', 'yes');
     showConsent = false;
-    track('pageview');
+    track('consent', { choice: 'yes' });
+    trackPageview();
   }
 
   function declineConsent() {
@@ -57,8 +59,9 @@
   }
 
   afterNavigate(({ to }) => {
-    if (to?.url?.pathname) track('pageview');
+    if (to?.url?.pathname) trackPageview();
   });
+  beforeNavigate(() => trackLeave());
 
   // ── Easter egg: Konami code ──────────────────────────────────────────
   const KONAMI: string[] = ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowleft', 'arrowright', 'arrowleft', 'arrowright', 'b', 'a'];

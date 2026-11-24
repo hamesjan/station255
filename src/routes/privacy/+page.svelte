@@ -7,7 +7,7 @@
 </svelte:head>
 
 <h1>Privacy Policy</h1>
-<p class="updated">Last updated: June 2025</p>
+<p class="updated">Last updated: November 2026</p>
 
 <div class="panel section">
   <h2>Your files stay in your browser</h2>
@@ -23,11 +23,15 @@
   <p>If you accept the cookie notice, we collect the following anonymous data:</p>
   <ul class="list">
     <li><strong>Page URL</strong> — which tool or page you visited (e.g. <code>/demake</code>).</li>
-    <li><strong>Event type</strong> — whether you viewed a page, used a tool, or exported a file.</li>
+    <li><strong>Event type</strong> — whether you viewed a page, used a tool, exported a file, or accepted this notice.</li>
     <li><strong>Referrer</strong> — the URL of the site that linked to us (from <code>document.referrer</code>).</li>
     <li><strong>Session ID</strong> — a random UUID generated in your browser and stored in <code>localStorage</code> under the key <code>s255_sid</code>. This is not tied to any personal identity.</li>
     <li><strong>IP address</strong> — collected server-side by Caddy when the beacon is received. The last octet is masked in our dashboard (e.g. <code>1.2.3.x</code>). We do not log or store full IP addresses long-term.</li>
     <li><strong>User agent</strong> — your browser and OS, from the HTTP request header.</li>
+    <li><strong>Device context</strong> — screen and window size, browser language, and time zone (e.g. <code>America/Los_Angeles</code>).</li>
+    <li><strong>Engagement</strong> — how long a page stayed open in a visible tab, how far you scrolled, and which page you came from on this site.</li>
+    <li><strong>Link clicks</strong> — the address of external links you click (domain and path only).</li>
+    <li><strong>Error reports</strong> — the message and code location of JavaScript errors, so broken tools can be fixed.</li>
   </ul>
 </div>
 

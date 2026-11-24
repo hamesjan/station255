@@ -569,6 +569,117 @@ export const icons: Record<string, string> = {
     '........',
   ]),
 
+  // ── Batch 4 ───────────────────────────────────────────────────────────────
+  'png-to-ico': icon([
+    'LLLLLL..',
+    'LWWWWL..',
+    'LWWWWL..',
+    'LLLLLLY.',
+    '...YYYYY',
+    '...YWWYY',
+    '...YWWYY',
+    '...YYYYY',
+  ]),
+
+  'gif-maker': icon([
+    'MMMMMMMM',
+    'M.W..W.M',
+    'M.WW.W.M',
+    'M.W.WW.M',
+    'M.W..W.M',
+    'MMMMMMMM',
+    '.C.C.C.C',
+    'C.C.C.C.',
+  ]),
+
+  'emote': icon([
+    '.YYYYYY.',
+    'YYYYYYYY',
+    'YBYYYYBY',
+    'YYYYYYYY',
+    'YBYYYYBY',
+    'YYBBBBYY',
+    'YYYYYYYY',
+    '.YYYYYY.',
+  ]),
+
+  'pixel-to-svg': icon([
+    'MM..CC..',
+    'MM..CC..',
+    '..LL..YY',
+    '..LL..YY',
+    'W.......',
+    '.W.WWWW.',
+    '..W....W',
+    '...W....',
+  ]),
+
+  'colorblind': icon([
+    '..WWWW..',
+    '.W....W.',
+    'W.RRGG.W',
+    'W.RRGG.W',
+    'W.GGRR.W',
+    'W.GGRR.W',
+    '.W....W.',
+    '..WWWW..',
+  ]),
+
+  'picross': icon([
+    '..WBWBWB',
+    '..BWBWBW',
+    'WWCC..CC',
+    'BB..CC..',
+    'WWCCCC..',
+    'BB....CC',
+    'WW..CCCC',
+    'BBCC..CC',
+  ]),
+
+  'typing-test': icon([
+    'GGGGGGGG',
+    'G.W.W.WG',
+    'GGGGGGGG',
+    'GW.W.W.G',
+    'GGGGGGGG',
+    'G.WWWW.G',
+    'GGGGGGGG',
+    '........',
+  ]),
+
+  'pomodoro': icon([
+    '...NN...',
+    '..NNNN..',
+    '.RRRRRR.',
+    'RRRRRRRR',
+    'RRRWRRRR',
+    'RRRRWRRR',
+    'RRRRRRRR',
+    '.RRRRRR.',
+  ]),
+
+  'exif': icon([
+    'GGGGGGG.',
+    'G.....GG',
+    'G.WWW.GG',
+    'G.....GG',
+    'G.WW..GG',
+    'G.....GG',
+    'G.RR..GG',
+    'GGGGGGGG',
+  ]),
+
+  'minesweeper': icon([
+    '...BB...',
+    '.B.BB.B.',
+    '..BBBB..',
+    'BBBBWBBB',
+    '..BBBB..',
+    '.B.BB.B.',
+    '...BB...',
+    '........',
+  ]),
+
   // ── Site nav (not tools, but reuse the same lookup + rendering) ──────────
   'history': icon([
     '.WWWWWW.',
