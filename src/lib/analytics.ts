@@ -50,9 +50,40 @@ export function track(event: string, data?: Record<string, unknown>): void {
       session_id: getSessionId(),
     };
     if (data) payload.data = data;
-    navigator.sendBeacon('/collect', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
+    if (event === 'tool_use') return queueToolUse(payload);
+    send(payload);
   } catch {
     // silently ignore — analytics should never break the page
+  }
+}
+
+function send(payload: Record<string, unknown>): void {
+  navigator.sendBeacon('/collect', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
+}
+
+// Many tools re-render (and call track('tool_use')) on every slider tick or
+// keystroke. Hold each tool's latest call and send it once input settles, so a
+// drag is one event carrying the final settings. Capped per pageview.
+const TOOL_USE_SETTLE_MS = 2000;
+const MAX_TOOL_USES_PER_VIEW = 20;
+const pendingToolUse = new Map<string, { payload: Record<string, unknown>; timer: ReturnType<typeof setTimeout> }>();
+let toolUsesThisView = 0;
+
+function queueToolUse(payload: Record<string, unknown>): void {
+  const key = String((payload.data as Record<string, unknown> | undefined)?.tool ?? payload.page);
+  const prev = pendingToolUse.get(key);
+  if (prev) clearTimeout(prev.timer);
+  const timer = setTimeout(() => flushToolUse(key), TOOL_USE_SETTLE_MS);
+  pendingToolUse.set(key, { payload, timer });
+}
+
+function flushToolUse(key?: string): void {
+  for (const k of key ? [key] : [...pendingToolUse.keys()]) {
+    const p = pendingToolUse.get(k);
+    if (!p) continue;
+    clearTimeout(p.timer);
+    pendingToolUse.delete(k);
+    if (++toolUsesThisView <= MAX_TOOL_USES_PER_VIEW) send(p.payload);
   }
 }
 
@@ -90,6 +121,8 @@ function context(): Record<string, unknown> {
 /** Call from afterNavigate — fires on first load and every client navigation. */
 export function trackPageview(): void {
   if (typeof window === 'undefined') return;
+  flushToolUse();
+  toolUsesThisView = 0;
   pvId = randomId().slice(0, 12);
   visibleSince = document.visibilityState === 'visible' ? Date.now() : 0;
   maxScroll = scrollPct();
@@ -99,6 +132,7 @@ export function trackPageview(): void {
 
 /** Sends the engaged-time segment for the current page. Call from beforeNavigate. */
 export function trackLeave(): void {
+  flushToolUse(); // don't lose a pending tool_use when the tab closes or navigates
   if (!pvId || !visibleSince) return;
   const ms = Date.now() - visibleSince;
   visibleSince = 0;
